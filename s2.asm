@@ -23,25 +23,25 @@ gameRevision = 2
 ;	| If 0, a REV00 ROM is built
 ;	| If 1, a REV01 ROM is built, which contains some fixes
 ;	| If 2, a (probable) REV02 ROM is built, which contains even more fixes
-padToPowerOfTwo = 0
+padToPowerOfTwo = 1;0
 ;	| If 1, pads the end of the ROM to the next power of two bytes (for real hardware)
 ;
 allOptimizations = 0
 ;	| If 1, enables all optimizations
 ;
-skipChecksumCheck = 0|allOptimizations
+skipChecksumCheck = 1|allOptimizations
 ;	| If 1, disables the unnecessary (and slow) bootup checksum calculation
 ;
-zeroOffsetOptimization = 0|allOptimizations
+zeroOffsetOptimization = 1|allOptimizations
 ;	| If 1, makes a handful of zero-offset instructions smaller
 ;
 removeJmpTos = 0|gameRevision=2|allOptimizations
 ;	| If 1, many unnecessary JmpTos are removed, improving performance
 ;
-addsubOptimize = 0|gameRevision=2|allOptimizations
+addsubOptimize = 1|gameRevision=2|allOptimizations
 ;	| If 1, some add/sub instructions are optimized to addq/subq
 ;
-relativeLea = 0|gameRevision<>2|allOptimizations
+relativeLea = 1|gameRevision<>2|allOptimizations
 ;	| If 1, makes some instructions use pc-relative addressing, instead of absolute long
 ;
 useFullWaterTables = 0
@@ -382,6 +382,7 @@ GameMode_EndingSequence:dc.l	JmpTo_EndingSequence	; End sequence mode
 GameMode_OptionsMenu:	dc.l	OptionsMenu		; Options mode
 GameMode_LevelSelect:	dc.l	LevelSelectMenu		; Level select mode
 GameMode_save_screen:	dc.l	s3_save_screen
+GameMode_Blue_Spheres:	dc.l	BlueSpheresS3
 ; ===========================================================================
     if skipChecksumCheck=0	; checksum error code
 ; loc_3CE:
@@ -464,6 +465,7 @@ Vint_PCM_ptr:		offsetTableEntry.w Vint_PCM			; $14
 Vint_Menu_ptr:		offsetTableEntry.w Vint_Menu		; $16
 Vint_Ending_ptr:	offsetTableEntry.w Vint_Ending		; $18
 Vint_CtrlDMA_ptr:	offsetTableEntry.w Vint_CtrlDMA		; $1A
+Vint_Blue_spheres:       offsetTableEntry.w VInt_1C                     ;1C
 Vint_Save_Screen:       offsetTableEntry.w VInt_1E                     ;1C
 ; ===========================================================================
 ;VintSub0
@@ -865,6 +867,16 @@ Vint_CtrlDMA:
 	jsr	(ProcessDMAQueue).l
 	startZ80
 	rts
+VInt_1C:
+		jsr		Rotate_SSPal;bsr.w	Rotate_SSPal
+		bsr.w	Do_ControllerPal
+		jsr		Update_SSMap;bsr.w	Update_SSMap
+		tst.w	(Demo_timer).w
+		beq.w	+
+		subq.w	#1,(Demo_timer).w
+
++
+		jmp	(Set_Kos_Bookmark).l
 VInt_1E:
 		bsr.w	Do_ControllerPal
 		jsr     ProcessDMAQueue
@@ -1368,7 +1380,12 @@ PlaySoundLocal:
 +
 	rts
 ; End of function PlaySoundLocal
-
+Change_Music_Tempo:
+;		stopZ80
+;		move.b	d0,(Z80_RAM+zTempoSpeedup).l
+;		startZ80
+		rts
+; End of function Change_Music_Tempo
 ; ---------------------------------------------------------------------------
 ; Subroutine to pause the game
 ; ---------------------------------------------------------------------------
@@ -1629,6 +1646,7 @@ NemDec:
 ; input: a4 = starting address of destination
 ; sub_14F0: NemDecB:
 NemDecToRAM:
+Nem_Decomp_To_RAM:
 	movem.l	d0-a1/a3-a5,-(sp)
 	lea	(NemDec_WriteAndAdvance).l,a3 ; advance to the next location after each write
 
@@ -1914,6 +1932,7 @@ ClearPLC:
 
 ; sub_168A:
 RunPLC_RAM:
+Process_Nem_Queue_Init:
 	tst.l	(Plc_Buffer).w
 	beq.s	++	; rts
 	tst.w	(Plc_Buffer_Reg18).w
@@ -3008,6 +3027,7 @@ Pal_FadeFromBlack:
 ; ---------------------------------------------------------------------------
 ; sub_243E: Pal_AddColor:
 .UpdateColour:
+Pal_AddColor:
 	move.w	(a1)+,d2
 	move.w	(a0),d3
 	cmp.w	d2,d3
@@ -3261,6 +3281,7 @@ Pal_FadeToWhite:
 ; ---------------------------------------------------------------------------
 ; sub_25B2: Pal_ToWhite:
 .UpdateAllColours:
+Pal_ToWhite:
 	; Update above-water palette
 	moveq	#0,d0
 	lea	(Normal_palette).w,a0
@@ -3283,7 +3304,7 @@ Pal_FadeToWhite:
 
 	move.b	(Palette_fade_length).w,d0
 .nextcolour2:
-	bsr.s	.UpdateColour
+	bsr.s	Pal_AddColor2;.UpdateColour
 	dbf	d0,.nextcolour2
 
 	rts
@@ -3293,6 +3314,7 @@ Pal_FadeToWhite:
 ; ---------------------------------------------------------------------------
 ; sub_25E0: Pal_AddColor2:
 .UpdateColour:
+Pal_AddColor2:
 	move.w	(a0),d2
 	cmpi.w	#$EEE,d2
 	beq.s	.updatenone
@@ -3547,7 +3569,7 @@ PalPtr_SCZ:	palptr Pal_SCZ,   1
 PalPtr_HPZ_U:	palptr Pal_HPZ_U, 0
 PalPtr_CPZ_U:	palptr Pal_CPZ_U, 0
 PalPtr_ARZ_U:	palptr Pal_ARZ_U, 0
-PalPtr_SS:	palptr Pal_SS,    0
+PalPtr_SS:	palptr Pal_SStage_Main,	0;Pal_SS,    0
 PalPtr_MCZ_B:	palptr Pal_MCZ_B, 1
 PalPtr_CNZ_B:	palptr Pal_CNZ_B, 1
 PalPtr_SS1:	palptr Pal_SS1,   3
@@ -4119,8 +4141,13 @@ TitleScreen_Loop:
 ; ===========================================================================
 ; loc_3CF6:
 TitleScreen_CheckIfChose2P:
+	subq	#1,d0
+	bne.s	LoadSPeiclaStae
 	move.b	#GameModeID_OptionsMenu,(Game_Mode).w ; => OptionsMenu
 	move.b	#0,(Options_menu_box).w
+	rts
+LoadSPeiclaStae:
+	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
 	rts
 Set_Lives_and_Continues:	
         move.b	#3,(Life_count).w
@@ -24961,7 +24988,7 @@ C9PalInfo macro codeptr,dataptr,loadtoOffset,length,fadeinTime,fadeinAmount
 	dc.b loadtoOffset, length, fadeinTime, fadeinAmount
     endm
 
-off_1338C:	C9PalInfo Pal_FadeFromBlack.UpdateColour, Pal_1342C, $60, $F,2,$15
+off_1338C:	C9PalInfo Pal_AddColor, Pal_1342C, $60, $F,2,$15;off_1338C:	C9PalInfo Pal_FadeFromBlack.Pal_AddColor2, Pal_1342C, $60, $F,2,$15;.UpdateColour, Pal_1342C, $60, $F,2,$15
 off_13398:	C9PalInfo                      loc_1344C, Pal_1340C, $40, $F,4,7
 off_133A4:	C9PalInfo                      loc_1344C,  Pal_AD1E,   0, $F,8,7
 off_133B0:	C9PalInfo                      loc_1348A,  Pal_AD1E,   0, $F,8,7
@@ -25169,11 +25196,11 @@ Obj0F_Main:
 	move.b	(Title_screen_option).w,d2
 	move.b	(Ctrl_1_Press).w,d0
 	or.b	(Ctrl_2_Press).w,d0
-	btst	#button_up,d0
+	btst	#0,d0;button_up,d0
 	beq.s	+
 	subq.b	#1,d2
 	bcc.s	+
-	move.b	#1,d2
+	move.b	#2,d2;1,d2
 +
 	btst	#button_down,d0
 	beq.s	+
@@ -27947,7 +27974,59 @@ ObjPtr_RingPrize:	dc.l ObjDC	; Ring prize from Casino Night Zone
 
 ObjNull: ;;
 	bra.w	DeleteObject
+Process_Sprites:
+;		tst.b	(Teleport_active_flag).w
+;		bne.s	locret_1AB0C
+		lea	(Object_RAM).w,a0
+;		tst.w	(Competition_mode).w
+;		bne.s	loc_1AAFA
+		cmpi.b	#$C,(Player_1+routine).w
+		beq.s	lc_1AAFA
+		cmpi.b	#6,(Player_1+routine).w
+		bhs.s	loc_1AB0E
 
+lc_1AAFA:
+		moveq	#(Object_RAM_End-Object_RAM)/object_size-1,d7
+		sub_1AAFC:
+		move.l	(a0),d0
+		beq.s	loc_1AB04
+		movea.l	d0,a1
+		jsr	(a1)
+
+loc_1AB04:
+		lea	next_object(a0),a0
+		dbf	d7,sub_1AAFC
+
+locret_1AB0C:
+		rts
+; End of function sub_1AAFC
+
+; ---------------------------------------------------------------------------
+
+loc_1AB0E:	; this is broken?
+		moveq	#((Dynamic_object_RAM+object_size)-Object_RAM)/object_size-1,d7
+		bsr.s	sub_1AAFC
+		moveq	#((Level_object_RAM+object_size)-(Dynamic_object_RAM+object_size))/object_size-1,d7
+		bsr.s	sub_1AB1A
+		moveq	#(Object_RAM_End-(Level_object_RAM+object_size))/object_size-1,d7
+		bra.s	sub_1AAFC
+
+; =============== S U B R O U T I N E =======================================
+
+
+sub_1AB1A:
+		move.l	(a0),d0
+		beq.s	lc_1AB28
+		tst.b	render_flags(a0)
+		bpl.s	lc_1AB28
+		jsr	Draw_Sprite(pc)
+
+lc_1AB28:
+		lea	next_object(a0),a0
+		dbf	d7,sub_1AB1A
+		rts
+; End of function sub_1AB1A
+; End of function Process_Sprites
 ; ---------------------------------------------------------------------------
 ; Subroutine to make an object move and fall downward increasingly fast
 ; This moves the object horizontally and vertically
@@ -82022,10 +82101,12 @@ loc_3D9D6:
 	lea	(Normal_palette).w,a0
 
 	moveq	#$3F,d0
--	jsrto	(Pal_FadeToWhite.UpdateColour).l, JmpTo_Pal_FadeToWhite_UpdateColour
+-	bsr.w	JmpTo_Pal_AddColor2;jsrto	(Pal_FadeToWhite.UpdateColour).l, JmpTo_Pal_FadeToWhite_UpdateColour
 	dbf	d0,-
 	movea.l	a1,a0
 	rts
+JmpTo_Pal_AddColor2 
+	jmp	(Pal_AddColor2).l
 ; ---------------------------------------------------------------------------
 +
 	move.l	#$EEE0EEE,d0
@@ -91094,7 +91175,8 @@ Sound6E:	include "sound/sfx/EE - Mecha Sonic Buzz.asm"
 Sound6F:	include "sound/sfx/EF - Large Laser.asm"
 Sound70:	include "sound/sfx/F0 - Oil Slide.asm"
 	finishBank
-
+BlueSpheresS3:
+	include	"blue spheres.asm"
 ; end of 'ROM'
 	if padToPowerOfTwo && (*)&(*-1)
 		cnop	-1,2<<lastbit(*-1)

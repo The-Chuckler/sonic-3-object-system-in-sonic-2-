@@ -433,7 +433,8 @@ GameModeID_2PLevelSelect =	id(GameMode_2PLevelSelect) ; 1C
 GameModeID_EndingSequence =	id(GameMode_EndingSequence) ; 20
 GameModeID_OptionsMenu =	id(GameMode_OptionsMenu) ; 24
 GameModeID_LevelSelect =	id(GameMode_LevelSelect) ; 28
-GameModeID_save_screen =	id(GameMode_save_screen)
+GameModeID_save_screen =	id(GameMode_save_screen) ; 2C
+GameModeID_BLSPHRSStage =	id(GameMode_Blue_Spheres) ; 30
 GameModeFlag_TitleCard =	7 ; flag bit
 GameModeID_TitleCard =		1<<GameModeFlag_TitleCard ; flag mask
 
@@ -1061,7 +1062,9 @@ Chunk_Table_End:
 
 Level_Layout:			ds.b	$1000
 Level_Layout_End:
-
+;	ds.b	$A
+;	phase Pos_table_P2
+;	dephase
 			ds.b	$1000 ; this is 80% is unused so go nuts but make sure S2 ss is fine when you do so it wont glitch out you can give it dynamic ram banks
 CompressionBuffer:         ; in conquest this is used to decompress exploation art and sonic 3 save in here its used by CNZ and s3 save screen (its hardcoded here for somereason)
                         ds.b    $800
@@ -1162,7 +1165,9 @@ DMA_queue_slot:            = VDP_Command_Buffer_Slot
 Horiz_Scroll_Buf:		ds.b	$380
 Horiz_Scroll_Buf_End:
 Sonic_Stat_Record_Buf:		ds.b	$100
+Sonic_Stat_Record_Buf_End:
 Sonic_Pos_Record_Buf:		ds.b	$100
+Pos_table_P2:
 Tails_Pos_Record_Buf:		ds.b	$100
 CNZ_saucer_data:		ds.b	$40	; the number of saucer bumpers in a group which have been destroyed. Used to decide when to give 500 points instead of 10
 CNZ_saucer_data_End:
@@ -1186,19 +1191,24 @@ Camera_BG2_X_pos_P2:	ds.w	1	; unused (only initialised at beginning of level)?
 				ds.w	1	; $FFFFEE32-$FFFFEE33 ; seems unused
 Camera_BG2_Y_pos_P2:	ds.l	1
 Camera_BG3_X_pos_P2:	ds.w	1	; unused (only initialised at beginning of level)?
-				ds.w	1	; $FFFFEE3A-$FFFFEE3B ; seems unused
+				ds.w	1;w	1	; $FFFFEE3A-$FFFFEE3B ; seems unused
 Camera_BG3_Y_pos_P2:	ds.l	1
 Horiz_block_crossed_flag:	ds.b	1	; toggles between 0 and $10 when you cross a block boundary horizontally
 Verti_block_crossed_flag:	ds.b	1	; toggles between 0 and $10 when you cross a block boundary vertically
 Horiz_block_crossed_flag_BG:	ds.b	1	; toggles between 0 and $10 when background camera crosses a block boundary horizontally
 Verti_block_crossed_flag_BG:	ds.b	1	; toggles between 0 and $10 when background camera crosses a block boundary vertically
 Horiz_block_crossed_flag_BG2:	ds.b	1	; used in CPZ
-				ds.b	1	; $FFFFEE45 ; seems unused
+	ds.b	1
+;SK_alone_flag				ds.b	1	; $FFFFEE45 ; seems unused
 Horiz_block_crossed_flag_BG3:	ds.b	1
-				ds.b	1	; $FFFFEE47 ; seems unused
+SK_special_stage_flag				ds.b	1	; $FFFFEE47 ; seems unused
 Horiz_block_crossed_flag_P2:	ds.b	1	; toggles between 0 and $10 when you cross a block boundary horizontally
 Verti_block_crossed_flag_P2:	ds.b	1	; toggles between 0 and $10 when you cross a block boundary vertically
-				ds.b	4	; $FFFFEE4A-$FFFFEE4D ; seems unused
+;Blue_spheres_current_stage	ds.b 4			; the layout parts that make up the current stage
+	ds.b	4
+
+;Blue_spheres_difficulty		ds.b 1;				ds.b	4	; $FFFFEE4A-$FFFFEE4D ; seems unused
+	ds.b	4
 Scroll_flags:			ds.w	1	; bitfield ; bit 0 = redraw top row, bit 1 = redraw bottom row, bit 2 = redraw left-most column, bit 3 = redraw right-most column
 Scroll_flags_BG:		ds.w	1	; bitfield ; bits 0-3 as above, bit 4 = redraw top row (except leftmost block), bit 5 = redraw bottom row (except leftmost block), bits 6-7 = as bits 0-1
 Scroll_flags_BG2:		ds.w	1	; bitfield ; essentially unused; bit 0 = redraw left-most column, bit 1 = redraw right-most column
@@ -1308,6 +1318,7 @@ Demo_Time_left:			ds.w	1	; 2 bytes
 
 Vscroll_Factor:
 Vscroll_Factor_FG:			ds.w	1
+V_scroll_value_BG:
 Vscroll_Factor_BG:			ds.w	1
 unk_F61A:			ds.l	1	; Only ever cleared, never used
 Vscroll_Factor_P2:
@@ -1510,7 +1521,7 @@ TailsTails_LastLoadedDPLC:	ds.b	1	; mapping frame number when Tails' tails last 
 ButtonVine_Trigger:		ds.b	$10	; 16 bytes flag array, #subtype byte set when button/vine of respective subtype activated
 Anim_Counters:			ds.b	$10	; $FFFFF7F0-$FFFFF7FF
 Misc_Variables_End:
-
+Sprite_table:
 Sprite_Table:			ds.b	$280	; Sprite attribute table buffer
 Sprite_Table_End:
 				ds.b	$80	; unused, but SAT buffer can spill over into this area when there are too many sprites on-screen
@@ -1518,6 +1529,7 @@ Sprite_Table_End:
 Normal_palette:			ds.b	palette_line_size	; main palette for non-underwater parts of the screen
 Normal_palette_line2:		ds.b	palette_line_size
 Normal_palette_line3:		ds.b	palette_line_size
+Normal_palette_line_4:
 Normal_palette_line4:		ds.b	palette_line_size
 Normal_palette_End:
 
@@ -1737,7 +1749,9 @@ Game_Over_2P:			ds.w	1
 
 SS2p_RingBuffer:		ds.w	6
     ds.b	4	; $FFFFFFAC-$FFFFFFAF ; seems unused
+;Chaos_emerald_count	=	Emerald_count
 Got_Emerald:			ds.b	1
+Chaos_emerald_count:
 Emerald_count:			ds.b	1
 Got_Emeralds_array:		ds.b	7	; 7 bytes
 Collected_emeralds_array =      Got_Emeralds_array
@@ -1842,10 +1856,66 @@ TtlScr_Object_RAM_End:
 
 
 ; RAM variables - Special stage
-	phase	RAM_Start	; Move back to start of RAM
-;SSRAM_ArtNem_SpecialSonicAndTails:
-
-				ds.b	$3484 ;$353*$20	; $353 art blocks (6A60 bytes)  this is unused now
+;	phase	RAM_Start	; Move back to start of RAM
+;SSRAM_ArtNem_SpecialSonicAndTails:;
+;Block_table:
+;		ds.b	$1800
+SStage_collision_response_list	ds.b	$100
+;	ds.b	$100; := Block_table+$1400	; $100 bytes ; sprite collision list during a special stage
+SStage_unkA500	ds.b	$100; :=		Block_table+$1500	; unknown special stage array
+SStage_unkA600	ds.b	$100; :=		Block_table+$1600	; unknown special stage array		
+SStage_scalar_index_0		ds.w 1			; unknown scalar table index value
+SStage_scalar_index_1		ds.w 1			; unknown scalar table index value
+SStage_scalar_index_2		ds.w 1			; unknown scalar table index value
+SStage_scalar_result_0		ds.l 1			; unknown scalar table results values
+SStage_scalar_result_1		ds.l 1			; unknown scalar table results values
+SStage_scalar_result_2		ds.l 1			; unknown scalar table results values
+SK_alone_flag	ds.b	1
+Blue_spheres_current_stage	ds.b 4
+	ds.b 5;$A
+SStage_scalar_result_3		ds.l 1			; unknown scalar table results values
+;	ds.w 1
+Special_stage_anim_frame	ds.w 1			; special stage globe's current animation frame, $10 and higher is turning
+Special_stage_X_pos		ds.w 1
+Special_stage_Y_pos		ds.w 1
+Special_stage_angle		ds.b 1			; $00 = north, $40 = west, $80 = south, $C0 = east
+Special_bonus_entry_flag	ds.b 1;			ds.b 1				; unused
+Special_stage_velocity		ds.w 1			; player's movement speed, negative when going backwards
+Special_stage_turning		ds.b 1			; direction of next turn, 4 = left, -4 = right
+Special_stage_bumper_lock	ds.b 1			; if set, the player can't start advancing by pressing up
+Special_stage_prev_anim_frame	ds.b 1
+Blue_spheres_stage_flag			ds.b 2				; unused
+Special_stage_palette_frame	ds.b 1			; same as Special_stage_anim_frame, but set to 0 while turning
+Special_stage_turn_lock		ds.b 1			; if set, the player can't turn
+Special_stage_advancing		ds.b 1			; set when the player player presses up
+Special_stage_jumping		ds.b 1			; $80 = normal jump, $81 = spring
+;	ds.b 1
+Special_stage_fade_timer	ds.b 1			; counts up when leaving the special stage
+Special_stage_prev_X_pos	ds.w 1
+Special_stage_prev_Y_pos	ds.w 1
+Special_stage_spheres_left	ds.w 1
+Special_stage_ring_count	ds.w 1
+Special_stage_sphere_HUD_flag	ds.b 1
+Special_stage_extra_life_flags	ds.b 1			; when bit 7 is set, the ring HUD is updated
+Special_stage_rate_timer	ds.w 1			; when this reaches 0, the special stage speeds up
+Special_stage_jumping_P2	ds.b 1			; $80 = normal jump, $81 = spring
+;Blue_spheres_difficulty	ds.b	1;
+			ds.b 1				; unused
+Special_stage_rings_left	ds.w 1
+Special_stage_rate		ds.w 1			; player's maximum speed in either direction
+Special_stage_palette_addr	ds.l 1			; ROM address of the stage's color palette
+;	ds.l 1
+Special_stage_clear_timer	ds.w 1			; counts up after getting the last sphere, when it reaches $100 the emerald appears
+Special_stage_clear_routine	ds.b 1			; if set, the player can't jump
+Special_stage_emerald_timer	ds.b 1			; counts down when the emerald appears, when it reaches 0 the emerald sound plays
+Special_stage_interact		ds.w 1			; address of the last bumper touched, or the emerald at the end of the stage
+Special_stage_started		ds.b 1			; set when the player begins moving at the start of the stage
+;SStage_layout_buffer	ds.b	$600
+			ds.b $2F			; unused
+SStage_extra_sprites :=		*		; S3 uses a different address
+		ds.b $70
+SStage_layout_buffer	ds.b	$600
+		ds.b	$3484-$300-$3F-$70-$600-$2F ;$353*$20	; $353 art blocks (6A60 bytes)  this is unused now
 SSRAM_MiscKoz_SpecialPerspective:
                                 ds.b	$1AFC
 SSRAM_MiscNem_SpecialLevelLayout:
@@ -1854,7 +1924,7 @@ SSRAM_MiscNem_SpecialLevelLayout:
 SSRAM_MiscKoz_SpecialObjectLocations:
 				ds.b	$1AE0
 
-				ds.b	$1AE0     ; UNUSED
+				ds.b	$1AE0     ; UNUSED;HOLY SHIT THANK GOD TYSFM
                                 ds.b	$F00 ; unused
 SSRAMMiscStart:
 PNT_Buffer:
@@ -1892,7 +1962,9 @@ SSTrack_last_mapping_frame:				ds.b	1
 SSTrack_mappings_RLE:					ds.l	1
 SSDrawRegBuffer:						ds.w	6
 SSDrawRegBuffer_End
-		ds.b	2
+;Special_stage_anim_frame	ds.w	1;
+Blue_spheres_difficulty	ds.b	1
+		ds.b	1;2
 SpecialStage_LastSegment2:	ds.b	1
 SS_unk_DB4D:	ds.b	1
 		ds.b	$14
@@ -1931,7 +2003,8 @@ SS_Offset_Y:			ds.w	1
 SS_Swap_Positions_Flag:	ds.b	1
 SSRAMMiscEnd:
 	phase	Sprite_Table_Input
-SS_Sprite_Table_Input:		ds.b	$400	; in custom format before being converted and stored in Sprite_Table
+;SStage_collision_response_list	ds.b	$100
+SS_Sprite_Table_Input:		ds.b	$400;400	; in custom format before being converted and stored in Sprite_Table
 SS_Sprite_Table_Input_End:
 
 	phase	Object_RAM	; Move back to the object RAM
@@ -1974,6 +2047,7 @@ SS_Horiz_Scroll_Buf_1_End:
 
 
 	phase	ramaddr(Sprite_Table)	; Still in SS RAM
+;Sprite_table	=	SS_Sprite_Table;Sprite_Table
 SS_Sprite_Table:			ds.b	$280	; Sprite attribute table buffer
 SS_Sprite_Table_End:
 				ds.b	$80	; unused, but SAT buffer can spill over into this area when there are too many sprites on-screen
