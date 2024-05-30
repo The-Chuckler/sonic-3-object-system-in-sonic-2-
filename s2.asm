@@ -11296,7 +11296,6 @@ MenuScreen:
 	bsr.w	ClearOld2PLevSelSelection
 	addq.b	#1,(Current_Zone_2P).w
 	andi.b	#3,(Current_Zone_2P).w
-	clr.w	(Player_mode).w
 	clr.b	(Current_Act_2P).w
 	clr.w	(Results_Screen_2P).w	; VsRSID_Act
 	clr.b	(Level_started_flag).w
@@ -11871,7 +11870,6 @@ MenuScreen_LevelSelect:
 
 	bsr.w	LevelSelect_DrawIcon
 
-	clr.w	(Player_mode).w
 	clr.w	(Results_Screen_2P).w	; VsRSID_Act
 	clr.b	(Level_started_flag).w
 	clr.w	(Anim_Counters).w
@@ -11947,7 +11945,7 @@ LevelSelect_PressStart:
 	bne.s	LevelSelect_StartZone
 
 ;LevelSelect_SpecialStage:
-	move.b	#GameModeID_SpecialStage,(Game_Mode).w ; => SpecialStage
+	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => SpecialStage
 	clr.w	(Current_ZoneAndAct).w
 	move.b	#3,(Life_count).w
 	move.b	#3,(Life_count_2P).w
@@ -27976,11 +27974,9 @@ ObjPtr_RingPrize:	dc.l ObjDC	; Ring prize from Casino Night Zone
 ObjNull: ;;
 	bra.w	DeleteObject
 Process_Sprites:
-;		tst.b	(Teleport_active_flag).w
-;		bne.s	locret_1AB0C
+
 		lea	(Object_RAM).w,a0
-;		tst.w	(Competition_mode).w
-;		bne.s	loc_1AAFA
+
 		cmpi.b	#$C,(Player_1+routine).w
 		beq.s	lc_1AAFA
 		cmpi.b	#6,(Player_1+routine).w
@@ -27988,7 +27984,7 @@ Process_Sprites:
 
 lc_1AAFA:
 		moveq	#(Object_RAM_End-Object_RAM)/object_size-1,d7
-		sub_1AAFC:
+sub_1AAFC:
 		move.l	(a0),d0
 		beq.s	loc_1AB04
 		movea.l	d0,a1

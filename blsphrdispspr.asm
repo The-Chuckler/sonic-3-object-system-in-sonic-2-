@@ -432,10 +432,10 @@ loc_9CCE:
 loc_9CE6:
 		addq.b	#1,(Special_stage_clear_routine).w
 		move.b	#1,(Special_stage_fade_timer).w
-		move.b	#$48,(Game_mode).w
+		move.b	#$48,(Game_mode).w	;Special Stage Results
 		tst.b	(Blue_spheres_stage_flag).w
 		beq.s	loc_9D02
-		move.b	#$30,(Game_mode).w
+		move.b	#$30,(Game_mode).w	;Blue Sphere results (they are different)
 
 loc_9D02:
 ;		tst.b	(Special_bonus_entry_flag).w
