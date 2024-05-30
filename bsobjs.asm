@@ -116,7 +116,7 @@ Map_GetBlueSpheres:
 		include "General/Special Stage/Map - Get Blue Spheres.asm"
 ; ---------------------------------------------------------------------------
 Obj_SStage_8FAA:
-		cmpi.w	#2,(Player_mode).w
+		cmpi.b	#2,(Player_mode).w
 		bne.s	+
 		move.l	#Map_SStageTails,mappings(a0)
 		move.w	#make_art_tile($7F1,1,1),art_tile(a0)
@@ -247,7 +247,7 @@ loc_9152:
 		bsr.w	sub_953E
 		jsr	(Draw_Sprite).l
 
-		cmpi.w	#2,(Player_mode).w
+		cmpi.b	#2,(Player_mode).w
 		bne.s	+
 		lea	(PLC_SStageTails).l,a2
 		move.l	#ArtUnc_SStageTails,d6

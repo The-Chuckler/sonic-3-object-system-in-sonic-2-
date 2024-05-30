@@ -691,7 +691,7 @@ Bs_OBJ:
 	include	"bsobjs.asm"
 	even
 ArtUnc_SStageSonic:
-		align 4
+		align 2
 		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
 		even
 Map_SStageSonic:
