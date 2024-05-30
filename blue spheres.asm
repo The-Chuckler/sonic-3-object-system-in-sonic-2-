@@ -690,10 +690,7 @@ J_Nem_Decomp_To_RAM:
 Bs_OBJ:
 	include	"bsobjs.asm"
 	even
-ArtUnc_SStageSonic:
-		align 2
-		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
-		even
+
 Map_SStageSonic:
 		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
 		even
@@ -770,4 +767,8 @@ SStageKos_PerspectiveMaps:
 		even
 MapUnc_SSNum000:
 		binclude "General/Special Stage/Uncompressed Map/HUD.bin"
+		even
+ArtUnc_SStageSonic:
+		align 2
+		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
 		even
