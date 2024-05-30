@@ -120,24 +120,21 @@ Obj_SStage_8FAA:
 		bne.s	+
 		move.l	#Map_SStageTails,mappings(a0)
 		move.w	#make_art_tile($7F1,1,1),art_tile(a0)
-		jmp	++
-+
-		move.l	#Map_SStageSonic,mappings(a0)
-		move.w	#make_art_tile($7A0,0,1),art_tile(a0)
-
-+		move.b	#4,render_flags(a0)
-		move.b	#$10,width_pixels(a0)
-		move.b	#$10,height_pixels(a0)
-		move.w	#$200,priority(a0)
-
-
 ;		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
 ;		bne.w	loc_8FFA
 ;		move.l	#Obj_SStage_9444,(a1)
 ;		move.w	a0,$3E(a1)
+		jmp	loc_8FFA
++
+		move.l	#Map_SStageSonic,mappings(a0)
+		move.w	#make_art_tile($7A0,0,1),art_tile(a0)
+
 
 loc_8FFA:
-
+		move.b	#4,render_flags(a0)
+		move.b	#$10,width_pixels(a0)
+		move.b	#$10,height_pixels(a0)
+		move.w	#$200,priority(a0)
 loc_9010:
 		move.w	#$A0,flips_remaining(a0)
 		move.w	#$70,move_lock(a0)
@@ -248,20 +245,17 @@ loc_9152:
 		jsr	(Draw_Sprite).l
 
 		cmpi.b	#2,(Player_mode).w
-		bne.s	+
+		bne.s	loc_918A
 		lea	(PLC_SStageTails).l,a2
 		move.l	#ArtUnc_SStageTails,d6
 		move.w	#tiles_to_bytes($7F1),d4
-+
-		lea	(PLC_SStageSonic).l,a2
-		move.l	#ArtUnc_SStageSonic,d6
-		move.w	#tiles_to_bytes($7A0),d4
-+
-
-;		bra.s	SStage_PLCLoad_91A2
+		jmp		SStage_PLCLoad_91A2
 ; ---------------------------------------------------------------------------
 ;
 loc_918A:
+		lea	(PLC_SStageSonic).l,a2
+		move.l	#ArtUnc_SStageSonic,d6
+		move.w	#tiles_to_bytes($7A0),d4
 ;		cmpi.w	#3,(Player_mode).w
 ;		bne.s	SStage_PLCLoad_91A2
 ;		lea	(PLC_SStageKnuckles).l,a2
