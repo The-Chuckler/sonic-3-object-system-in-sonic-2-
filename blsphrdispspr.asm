@@ -387,8 +387,8 @@ loc_9C5C:
 		subq.b	#1,(Special_stage_emerald_timer).w
 		bne.s	locret_9C7E
 		addq.b	#1,(Special_stage_clear_routine).w
-;		moveq	#signextendB(mus_Emerald),d0
-;		jsr	(Play_Music).l
+		move.w	#MusID_Emerald,d0
+		jsr	(Play_Music).l
 
 locret_9C7E:
 		rts

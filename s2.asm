@@ -870,13 +870,15 @@ Vint_CtrlDMA:
 VInt_1C:
 		jsr		Rotate_SSPal;bsr.w	Rotate_SSPal
 		bsr.w	Do_ControllerPal
+		jsr     ProcessDMAQueue
 		jsr		Update_SSMap;bsr.w	Update_SSMap
 		tst.w	(Demo_timer).w
 		beq.w	+
 		subq.w	#1,(Demo_timer).w
-
 +
 		jmp	(Set_Kos_Bookmark).l
+
+
 VInt_1E:
 		bsr.w	Do_ControllerPal
 		jsr     ProcessDMAQueue

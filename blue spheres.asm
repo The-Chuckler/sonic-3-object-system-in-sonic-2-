@@ -14,21 +14,20 @@
 		move.w	#$9200,(a6)
 		move.w	#$8B00,(a6)
 		move.w	#$8720,(a6)
-;		clr.b	(Water_full_screen_flag).w
+		clr.b	(Water_fullscreen_flag).w
 		move.w	#$8C81,(a6)
 		jsr		Clear_DisplayData;bsr.w	Clear_DisplayData
 		clearRAM	Sprite_Table_Input,Sprite_Table_Input_End;$400
 		clearRAM	Object_RAM,(Kos_decomp_buffer-Object_RAM)
 		clearRAM	Oscillating_Numbers,Oscillating_Numbers_End;Oscillating_table,(AIZ_vine_angle-Oscillating_table)
 		clearRAM	Sonic_Stat_Record_Buf,Sonic_Stat_Record_Buf_End;Stat_table,$100
-;		moveq	#0,d0
-;		move.l	d0,(LRZ_rocks_addr_front).w
-;		move.l	d0,(LRZ_rocks_addr_back).w
+		moveq	#0,d0
 		jsr	(Init_SpriteTable).l
 		clr.w	(VDP_Command_Buffer).w
 		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w
-;		clr.w	(DMA_queue).w
-;		move.l	#DMA_queue,(DMA_queue_slot).w
+		clr.w	(DMA_queue).w
+		move.l	#DMA_queue,(DMA_queue_slot).w
+
 		moveq	#PalID_SS,d0;PalID_SS1,d0
 		jsr		PalLoad_ForFade;Now;bsr.w	PalLoad_Now;ForFade
 ;		lea	(Pal_SStage_Main).l,a1
@@ -80,13 +79,13 @@ loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($781),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageDigits).l,a0
 		bsr.w	J_Nem_Decomp
-		lea	(ArtNem_SStageDigits).l,a0
+		lea	(ArtNem_SStageShadow).l,a0
 		lea	(H_scroll_buffer+$20).w,a4
 		bsr.w	J_Nem_Decomp_To_RAM
 		move.l	#vdpComm(tiles_to_bytes($589),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageIcons).l,a0
 		bsr.w	J_Nem_Decomp
-		move.l	#vdpComm(tiles_to_bytes($7A0),VRAM,WRITE),(VDP_control_port).l
+		move.l	#vdpComm(tiles_to_bytes($7e1),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageShadow).l,a0
 		bsr.w	J_Nem_Decomp
 		lea	(MapUnc_SSNum000).l,a1
@@ -157,6 +156,7 @@ loc_84C2:
 		jsr	(Process_Sprites).l
 		bsr.w	Animate_SSRings
 		bsr.w	Touch_SSSprites
+
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
 		bsr.w	Draw_SSShadows
@@ -197,7 +197,7 @@ loc_853E:
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
 		bsr.w	sub_9D5E
-;		bsr.w	sub_9B62
+		bsr.w	sub_9B62
 		jsr		Process_Nem_Queue_Init;bsr.w	Process_Nem_Queue_Init
 		jsr	(Process_Kos_Module_Queue).l
 		subq.w	#1,(Pal_fade_delay).w
@@ -326,7 +326,7 @@ sub_9EBC:
 		lea	(SStage_layout_buffer+$100).w,a2
 		move.l	a1,d5
 		sub.l	a2,d5
-		bsr.s	sub_9F44
+		bsr.w	sub_9F44
 		moveq	#0,d6
 		move.l	a5,d1
 		lea	(SStage_unkA500).w,a4;l,a4;w,a4
@@ -375,8 +375,8 @@ loc_9F30:
 		dbf	d0,loc_9F1A
 		subq.w	#2,d1
 		bne.s	loc_9F0E
-;		moveq	#signextendB(sfx_RingLoss),d0
-;		jsr	(Play_SFX).l
+		move.w	#SndID_RingSpill,d0
+		jsr	(Play_Music).l
 		moveq	#1,d1
 
 locret_9F42:
@@ -614,6 +614,7 @@ loc_9D7E:
 Rings_frame_timer	=	Rings_anim_counter
 Rings_frame	=	Rings_anim_frame
 Animate_SSRings:
+
 		lea	(SStage_extra_sprites+$07).w,a1
 		subq.b	#1,(Rings_frame_timer).w
 		bpl.s	loc_9DC2
@@ -686,16 +687,23 @@ J_Eni_Decomp:
 	jmp	Eni_Decomp
 J_Nem_Decomp_To_RAM:
 	jmp	Nem_Decomp_To_RAM
+Bs_OBJ:
 	include	"bsobjs.asm"
-Map_SStageSonic:
-		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
+	even
 ArtUnc_SStageSonic:
+		align 4
 		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
 		even
+Map_SStageSonic:
+		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
+		even
+
+
 ArtUnc_SStageTails:
 		binclude "General/Sprites/Tails/Art/SStage Tails.bin"
 		even
-
+Map_SStageTails:
+		include "General/Sprites/Tails/Map - SStage Tails.asm"
 ArtUnc_SStageKnuckles:
 		binclude "General/Sprites/Knuckles/Art/SStage Knuckles.bin"
 		even
@@ -718,18 +726,6 @@ Map_SStageChaosEmerald:
 Map_SStageSuperEmerald:
 		include "General/Special Stage/Map - Super Emerald.asm"
 		even
-;ArtUnc_SStageSonic:
-;		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
-;		even
-;Map_SStageSonic:
-;		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
-;
-;ArtUnc_SStageKnuckles:
-;		binclude "General/Sprites/Knuckles/Art/SStage Knuckles.bin"
-;		even
-;Map_SStageKnuckles:
-;		include "General/Sprites/Knuckles/Map - SStage Knuckles.asm"
-;
 ArtNem_SStageShadow:
 		binclude "General/Special Stage/Nemesis Art/Shadow.bin"
 		even

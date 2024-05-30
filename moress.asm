@@ -423,8 +423,8 @@ loc_85E4:
 		move.b	(Super_emerald_count).w,d3
 
 loc_85F4:
-;		tst.b	(Debug_cheat_flag).w
-;		beq.s	loc_8606
+		tst.b	(Debug_options_flag).w
+		beq.s	loc_8606
 		move.w	(Sound_test_sound).w,d0
 		btst	#button_A,(Ctrl_1).w
 		bne.s	loc_8630

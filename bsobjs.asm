@@ -28,18 +28,18 @@ loc_8E5C:
 		move.w	#make_art_tile($55F,1,1),art_tile(a0)
 		move.w	#$120,x_pos(a0)
 		move.w	#$E8,y_pos(a0)
-		move.w	#3*60,$32(a0)
+		move.w	#3*60,move_lock(a0)
 		move.l	#loc_8E94,(a0)
 
 loc_8E94:
-		tst.w	$32(a0)
+		tst.w	move_lock(a0)
 		beq.s	loc_8EA4
-		subq.w	#1,$32(a0)
+		subq.w	#1,move_lock(a0)
 		jmp	(Draw_Sprite).l
 ; ---------------------------------------------------------------------------
 
 loc_8EA4:
-		cmpi.w	#$C0,$30(a0)
+		cmpi.w	#$C0,flips_remaining(a0)
 		blo.s	loc_8ECA
 		move.l	#loc_8EEC,(a0)
 		addq.b	#2,mapping_frame(a0)
@@ -51,10 +51,10 @@ loc_8EA4:
 ; ---------------------------------------------------------------------------
 
 loc_8ECA:
-		addi.w	#$10,$30(a0)
+		addi.w	#$10,flips_remaining(a0)
 
 loc_8ED0:
-		move.w	$30(a0),d0
+		move.w	flips_remaining(a0),d0
 		btst	#0,status(a0)
 		bne.s	loc_8EDE
 		neg.w	d0
@@ -72,13 +72,13 @@ loc_8EEC:
 ; ---------------------------------------------------------------------------
 
 loc_8EF4:
-		subi.w	#$10,$30(a0)
+		subi.w	#$10,flips_remaining(a0)
 		bne.s	loc_8F08
 		move.l	#loc_8F24,(a0)
-		move.w	#180,$32(a0)
+		move.w	#180,move_lock(a0)
 
 loc_8F08:
-		move.w	$30(a0),d0
+		move.w	flips_remaining(a0),d0
 		btst	#0,status(a0)
 		bne.s	loc_8F16
 		neg.w	d0
@@ -90,19 +90,19 @@ loc_8F16:
 ; ---------------------------------------------------------------------------
 
 loc_8F24:
-		tst.w	$32(a0)
+		tst.w	move_lock(a0)
 		beq.s	loc_8F34
-		subq.w	#1,$32(a0)
+		subq.w	#1,move_lock(a0)
 		jmp	(Draw_Sprite).l
 ; ---------------------------------------------------------------------------
 
 loc_8F34:
-		cmpi.w	#$C0,$30(a0)
+		cmpi.w	#$C0,flips_remaining(a0)
 		bhs.s	loc_8F42
-		addi.w	#$10,$30(a0)
+		addi.w	#$10,flips_remaining(a0)
 
 loc_8F42:
-		move.w	$30(a0),d0
+		move.w	flips_remaining(a0),d0
 		btst	#0,status(a0)
 		bne.s	loc_8F50
 		neg.w	d0
@@ -116,35 +116,36 @@ Map_GetBlueSpheres:
 		include "General/Special Stage/Map - Get Blue Spheres.asm"
 ; ---------------------------------------------------------------------------
 Obj_SStage_8FAA:
-		move.b	#4,render_flags(a0)
+		cmpi.w	#2,(Player_mode).w
+		bne.s	+
+		move.l	#Map_SStageTails,mappings(a0)
+		move.w	#make_art_tile($7F1,1,1),art_tile(a0)
+		jmp	++
++
+		move.l	#Map_SStageSonic,mappings(a0)
+		move.w	#make_art_tile($7A0,0,1),art_tile(a0)
+
++		move.b	#4,render_flags(a0)
 		move.b	#$10,width_pixels(a0)
 		move.b	#$10,height_pixels(a0)
 		move.w	#$200,priority(a0)
-		move.l	#Map_SStageSonic,mappings(a0)
-		move.w	#make_art_tile($7D4,0,1),art_tile(a0)
-;		cmpi.w	#2,(Player_mode).w
-;		bne.s	loc_8FFA
-;		move.l	#Map_SStageTails,mappings(a0)
-;		move.w	#make_art_tile($7EB,1,1),art_tile(a0)
+
+
 ;		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
 ;		bne.w	loc_8FFA
 ;		move.l	#Obj_SStage_9444,(a1)
 ;		move.w	a0,$3E(a1)
 
-;loc_8FFA:
-;		cmpi.w	#3,(Player_mode).w
-;		bne.s	loc_9010
-;		move.l	#Map_SStageKnuckles,mappings(a0)
-;		move.w	#make_art_tile($7D4,0,1),art_tile(a0)
+loc_8FFA:
 
 loc_9010:
-		move.w	#$A0,$30(a0)
-		move.w	#$70,$32(a0)
-		move.w	#0,$34(a0)
-		move.w	#$F800,$36(a0)
-		move.w	#0,$38(a0)
+		move.w	#$A0,flips_remaining(a0)
+		move.w	#$70,move_lock(a0)
+		move.w	#0,LastLoadedDPLC(a0)
+		move.w	#$F800,speed_shoes_timer(a0)
+		move.w	#0,character_id(a0)
 		bsr.w	sub_950C
-		move.b	#$FF,$3A(a0)
+		move.b	#$FF,next_tilt(a0)
 		move.l	#loc_903E,(a0)
 
 loc_903E:
@@ -215,7 +216,7 @@ loc_90EE:
 		bne.w	loc_9152
 		cmpi.b	#1,(Special_stage_jumping).w
 		bne.s	loc_911E
-		move.l	#-$100000,$40(a0)
+		move.l	#-$100000,jumping(a0)
 		move.b	#$80,(Special_stage_jumping).w
 		move.b	#0,(Special_stage_turning).w
 		move.b	#SndID_Jump,d0;q	#signextendB(sfx_Jump),d0
@@ -224,39 +225,43 @@ loc_90EE:
 loc_911E:
 		tst.b	(Special_stage_jumping).w
 		bpl.s	loc_9152
-		move.l	$3C(a0),d0
-		add.l	$40(a0),d0
+		move.l	routine_secondary(a0),d0
+		add.l	jumping(a0),d0
 		bmi.s	loc_9138
 		moveq	#0,d0
-		move.l	d0,$40(a0)
+		move.l	d0,jumping(a0)
 		move.b	d0,(Special_stage_jumping).w
 
 loc_9138:
 		move.w	(Special_stage_rate).w,d1
 		ext.l	d1
 		lsl.l	#4,d1
-		add.l	d1,$40(a0)
-		move.l	d0,$3C(a0)
+		add.l	d1,jumping(a0)
+		move.l	d0,routine_secondary(a0)
 		swap	d0
 		addi.w	#-$800,d0
-		move.w	d0,$36(a0)
+		move.w	d0,speed_shoes_timer(a0)
 
 loc_9152:
 		bsr.w	sub_950C
 		bsr.w	sub_953E
 		jsr	(Draw_Sprite).l
+
+		cmpi.w	#2,(Player_mode).w
+		bne.s	+
+		lea	(PLC_SStageTails).l,a2
+		move.l	#ArtUnc_SStageTails,d6
+		move.w	#tiles_to_bytes($7F1),d4
++
 		lea	(PLC_SStageSonic).l,a2
 		move.l	#ArtUnc_SStageSonic,d6
-		move.w	#tiles_to_bytes($7D4),d4
-;		cmpi.w	#2,(Player_mode).w
-;		bne.s	loc_918A
-;		lea	(PLC_SStageTails).l,a2
-;		move.l	#ArtUnc_SStageTails,d6
-;		move.w	#tiles_to_bytes($7EB),d4
+		move.w	#tiles_to_bytes($7A0),d4
++
+
 ;		bra.s	SStage_PLCLoad_91A2
 ; ---------------------------------------------------------------------------
 ;
-;loc_918A:
+loc_918A:
 ;		cmpi.w	#3,(Player_mode).w
 ;		bne.s	SStage_PLCLoad_91A2
 ;		lea	(PLC_SStageKnuckles).l,a2
@@ -266,16 +271,14 @@ loc_9152:
 SStage_PLCLoad_91A2:
 		moveq	#0,d0
 		move.b	mapping_frame(a0),d0
-		cmp.b	$3A(a0),d0
+		cmp.b	next_tilt(a0),d0
 		beq.s	locret_91E6
-		move.b	d0,$3A(a0)
-;		lea	(PLC_SStageSonic).l,a2
+		move.b	d0,next_tilt(a0)
 		add.w	d0,d0
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d5
 		subq.w	#1,d5
 		bmi.s	locret_91E6
-;		move.w	#tiles_to_bytes($7D4),d4
 
 loc_91BE:
 		moveq	#0,d1
@@ -286,7 +289,6 @@ loc_91BE:
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
 		lsl.l	#5,d1
-;		addi.l	#ArtUnc_SStageSonic,d1;ArtUnc_Sonic,d1
 		add.l	d6,d1
 		move.w	d4,d2
 		add.w	d3,d4
@@ -355,8 +357,8 @@ locret_94FA:
 
 ; ---------------------------------------------------------------------------
 word_94FC:
-		dc.w $116, $F0A, make_art_tile($7A0,3,1), $110
-		dc.w $127, $F0B, make_art_tile($7A0,3,1), $110
+		dc.w $116, $F0A, make_art_tile($7e1,3,1), $110
+		dc.w $127, $F0B, make_art_tile($7e1,3,1), $110
 sub_950C:
 		move.w	(SStage_scalar_index_2).w,d0
 		lea	(SStage_scalar_result_2).w,a1
@@ -393,9 +395,9 @@ sub_953E:
 		ext.l	d2
 		lsl.l	#8,d2
 		divs.w	d0,d2
-		add.w	$30(a0),d1
+		add.w	flips_remaining(a0),d1
 		move.w	d1,x_pos(a0)
-		add.w	$32(a0),d2
+		add.w	move_lock(a0),d2
 		move.w	d2,y_pos(a0)
 		rts
 ; End of function sub_953E
@@ -630,8 +632,8 @@ loc_97AA:
 		move.l	a1,4(a2)
 
 loc_97BE:
-;		moveq	#signextendB(sfx_BlueSphere),d0
-;		jsr	(Play_SFX).l
+	move.w	#SndID_Explosion,d0	; Blue Sphere SFX goes here btw
+	jsr	(Play_Music).l
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -643,8 +645,8 @@ loc_97C8:
 		move.w	d1,(Special_stage_interact).w
 		move.b	#1,(Special_stage_bumper_lock).w
 		move.b	#0,(Special_stage_advancing).w
-;		moveq	#signextendB(sfx_Bumper),d0
-;		jsr	(Play_SFX).l
+		move.b	#SndID_Bumper,d0
+		jmp	(Play_Music).l
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -660,8 +662,9 @@ loc_97EE:
 		bne.w	loc_9822
 		move.l	#$FFE80000,$40(a0)
 		move.b	#$81,(Special_stage_jumping).w
-;		moveq	#signextendB(sfx_Spring),d0
-;		jsr	(Play_SFX).l
+		move.b	#SndID_Spring,d0
+		jsr	(Play_Music).l
+
 
 loc_9822:
 		cmpi.b	#4,d2
@@ -682,7 +685,7 @@ loc_9838:
 loc_984C:
 		addi.w	#1,(Special_stage_ring_count).w
 		bset	#7,(Special_stage_extra_life_flags).w
-;		moveq	#signextendB(sfx_RingRight),d0
+		move.b	#SndID_Ring,d0
 		tst.b	(Blue_spheres_stage_flag).w
 		bne.s	loc_98A6
 		cmpi.w	#50,(Special_stage_ring_count).w
@@ -690,12 +693,12 @@ loc_984C:
 		bset	#0,(Special_stage_extra_life_flags).w
 		bne.s	loc_987E
 		addq.b	#1,(Continue_count).w
-;		move.w	#signextendB(sfx_Continue),d0
+		move.b	#SndID_ContinueJingle,d0
 		jmp	(Play_Music).l
 ; ---------------------------------------------------------------------------
 
 loc_987E:
-;		moveq	#signextendB(sfx_RingRight),d0
+		move.b	#SndID_Ring,d0
 		cmpi.w	#100,(Special_stage_ring_count).w
 		blo.s	loc_98A6
 		bset	#1,(Special_stage_extra_life_flags).w
@@ -707,10 +710,10 @@ loc_987E:
 
 loc_98A0:
 		addq.b	#1,(Life_count).w
-;		moveq	#signextendB(sfx_RingLoss),d0
+		move.b	#SndID_RingSpill,d0
 
 loc_98A6:
-;		jsr	(Play_SFX).l
+		jsr	(Play_Sound).l
 		rts
 ; ---------------------------------------------------------------------------
 
