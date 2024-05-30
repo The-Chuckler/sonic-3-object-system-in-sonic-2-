@@ -4149,6 +4149,7 @@ TitleScreen_CheckIfChose2P:
 	move.b	#0,(Options_menu_box).w
 	rts
 LoadSPeiclaStae:
+	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
 	rts
 Set_Lives_and_Continues:	
@@ -4772,12 +4773,10 @@ Level_MainLoop:
 Level_SetPlayerMode:
 	cmpi.b	#GameModeID_TitleCard|GameModeID_Demo,(Game_Mode).w ; pre-level demo mode?
 	beq.s	+			; if yes, branch
-	tst.w	(Two_player_mode).w	; 2P mode?
-	bne.s	+			; if yes, branch
 	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 	rts
 ; ---------------------------------------------------------------------------
-+	move.w	#0,(Player_mode).w	; force Sonic and Tails
++
 	rts
 ; End of function Level_SetPlayerMode
 

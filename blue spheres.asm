@@ -1,4 +1,5 @@
 ;SpecialStage:
+		move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 		move.b	#MusID_Stop,d0
 		bsr.w	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
@@ -691,16 +692,7 @@ Bs_OBJ:
 	include	"bsobjs.asm"
 	even
 
-Map_SStageSonic:
-		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
-		even
 
-
-ArtUnc_SStageTails:
-		binclude "General/Sprites/Tails/Art/SStage Tails.bin"
-		even
-Map_SStageTails:
-		include "General/Sprites/Tails/Map - SStage Tails.asm"
 ArtUnc_SStageKnuckles:
 		binclude "General/Sprites/Knuckles/Art/SStage Knuckles.bin"
 		even
@@ -768,7 +760,17 @@ SStageKos_PerspectiveMaps:
 MapUnc_SSNum000:
 		binclude "General/Special Stage/Uncompressed Map/HUD.bin"
 		even
+Map_SStageSonic:
+		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
+		even
 ArtUnc_SStageSonic:
 		align 2
 		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
 		even
+
+
+ArtUnc_SStageTails:
+		binclude "General/Sprites/Tails/Art/SStage Tails.bin"
+		even
+Map_SStageTails:
+		include "General/Sprites/Tails/Map - SStage Tails.asm"

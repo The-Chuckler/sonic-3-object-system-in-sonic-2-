@@ -116,10 +116,10 @@ Map_GetBlueSpheres:
 		include "General/Special Stage/Map - Get Blue Spheres.asm"
 ; ---------------------------------------------------------------------------
 Obj_SStage_8FAA:
-		cmpi.b	#2,(Player_mode).w
+		cmpi.w	#2,(Player_mode).w
 		bne.s	+
 		move.l	#Map_SStageTails,mappings(a0)
-		move.w	#make_art_tile($7F1,1,1),art_tile(a0)
+		move.w	#make_art_tile($7A0,1,1),art_tile(a0)
 ;		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
 ;		bne.w	loc_8FFA
 ;		move.l	#Obj_SStage_9444,(a1)
@@ -140,7 +140,6 @@ loc_9010:
 		move.w	#$70,move_lock(a0)
 		move.w	#0,LastLoadedDPLC(a0)
 		move.w	#$F800,speed_shoes_timer(a0)
-		move.w	#0,character_id(a0)
 		bsr.w	sub_950C
 		move.b	#$FF,next_tilt(a0)
 		move.l	#loc_903E,(a0)
@@ -244,11 +243,11 @@ loc_9152:
 		bsr.w	sub_953E
 		jsr	(Draw_Sprite).l
 
-		cmpi.b	#2,(Player_mode).w
+		cmpi.w	#2,(Player_mode).w
 		bne.s	loc_918A
 		lea	(PLC_SStageTails).l,a2
 		move.l	#ArtUnc_SStageTails,d6
-		move.w	#tiles_to_bytes($7F1),d4
+		move.w	#tiles_to_bytes($7A0),d4
 		jmp		SStage_PLCLoad_91A2
 ; ---------------------------------------------------------------------------
 ;
