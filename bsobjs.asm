@@ -142,10 +142,10 @@ Obj_SStage_8FAA:
 		bne.s	loc_8FFA
 		move.l	#Map_SStageTails,mappings(a0)
 		move.w	#make_art_tile($7A0,1,1),art_tile(a0)
-;		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
-;		bne.w	loc_8FFA
-;		move.l	#Obj_SStage_9444,(a1)
-;		move.w	a0,$3E(a1)
+		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
+		bne.w	loc_8FFA
+		move.l	#Obj_SStage_9444,(a1)
+		move.w	a0,$3E(a1)
 loc_8FFA:
 		cmpi.w	#3,(Player_mode).w
 		bne.s	loc_9010
@@ -751,6 +751,8 @@ ScalarTable2:
 		even
 		include	"moress.asm"
 Obj_SStage_9212:
+		tst.w	(Player_mode).w
+		bne.w	locret_98AE
 		move.b	#4,render_flags(a0)
 		move.b	#$10,width_pixels(a0)
 		move.b	#$10,height_pixels(a0)
@@ -815,8 +817,8 @@ loc_92C4:
 		bne.w	loc_9304
 		move.l	#$FFE80000,$40(a0)
 		move.b	#$81,(Special_stage_jumping_P2).w
-;		moveq	#signextendB(sfx_Spring),d0
-;		jsr	(Play_SFX).l
+		move.b	#SndID_Spring,d0
+		jsr	(Play_Music).l
 
 loc_9304:
 		bsr.w	sub_937C
@@ -826,8 +828,8 @@ loc_9304:
 		bne.s	loc_932A
 		move.l	#$FFF00000,$40(a0)
 		move.b	#$80,(Special_stage_jumping_P2).w
-;		moveq	#signextendB(sfx_Jump),d0
-;		jsr	(Play_SFX).l
+		move.b	#SndID_Jump,d0
+		jsr	(Play_Music).l
 
 loc_932A:
 		tst.b	(Special_stage_jumping_P2).w
@@ -941,6 +943,7 @@ sub_9402:
 		rts
 ; End of function sub_9402
 Obj_SStage_9444:
+
 		move.b	#4,render_flags(a0)
 		move.b	#$10,width_pixels(a0)
 		move.b	#$10,height_pixels(a0)
