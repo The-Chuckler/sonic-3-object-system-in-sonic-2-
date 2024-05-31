@@ -1911,7 +1911,7 @@ Special_stage_emerald_timer	ds.b 1			; counts down when the emerald appears, whe
 Special_stage_interact		ds.w 1			; address of the last bumper touched, or the emerald at the end of the stage
 Special_stage_started		ds.b 1			; set when the player begins moving at the start of the stage
 ;SStage_layout_buffer	ds.b	$600
-			ds.b $2F			; unused
+	ds.b	$2F			; unused
 SStage_extra_sprites :=		*		; S3 uses a different address
 		ds.b $70
 SStage_layout_buffer	ds.b	$600

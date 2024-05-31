@@ -374,7 +374,7 @@ GameMode_SegaScreen:	dc.l	SegaScreen		; SEGA screen mode
 GameMode_TitleScreen:	dc.l	TitleScreen		; Title screen mode
 GameMode_Demo:		dc.l	Level			; Demo mode
 GameMode_Level:		dc.l	Level			; Zone play mode
-GameMode_SpecialStage:	dc.l	SpecialStage		; Special stage play mode
+GameMode_SpecialStage:	dc.l	BlueSpheresS3		; Special stage play mode
 GameMode_ContinueScreen:dc.l	ContinueScreen		; Continue mode
 GameMode_2PResults:	dc.l	TwoPlayerResults	; 2P results mode
 GameMode_2PLevelSelect:	dc.l	LevelSelectMenu2P	; 2P level select mode
@@ -11620,13 +11620,15 @@ OptionScreen_Select:
 ; ===========================================================================
 ; loc_90B6:
 OptionScreen_Select_Not1P:
-	move.b	#GameModeID_SegaScreen,(Game_Mode).w ; => SegaScreen
+	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
+	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
 	rts
 ; ===========================================================================
 ; loc_90D8:
 OptionScreen_Select_Other:
 	; When pressing START on the sound test option, return to the SEGA screen
-	move.b	#GameModeID_SegaScreen,(Game_Mode).w ; => SegaScreen
+	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
+	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
 	rts
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
