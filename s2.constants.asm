@@ -1166,6 +1166,7 @@ Horiz_Scroll_Buf:		ds.b	$380
 Horiz_Scroll_Buf_End:
 Sonic_Stat_Record_Buf:		ds.b	$100
 Sonic_Stat_Record_Buf_End:
+Pos_table:
 Sonic_Pos_Record_Buf:		ds.b	$100
 Pos_table_P2:
 Tails_Pos_Record_Buf:		ds.b	$100
@@ -1251,6 +1252,7 @@ Camera_Max_Y_pos_now:		ds.w	1	; was "Camera_max_scroll_spd"...
 Horiz_scroll_delay_val:		ds.w	1	; if its value is a, where a != 0, X scrolling will be based on the player's X position a-1 frames ago
 Sonic_Pos_Record_Index:		ds.w	1	; into Sonic_Pos_Record_Buf and Sonic_Stat_Record_Buf
 Horiz_scroll_delay_val_P2:	ds.w	1
+Pos_table_index:
 Tails_Pos_Record_Index:		ds.w	1	; into Tails_Pos_Record_Buf
 Camera_Y_pos_bias:		ds.w	1	; added to y position for lookup/lookdown, $60 is center
 Camera_Y_pos_bias_P2:		ds.w	1	; for Tails
@@ -1411,6 +1413,7 @@ Misc_Variables:
 Flying_x_vel_unk:			ds.w	1	; unused
 
 ; extra variables for the second player (CPU) in 1-player mode
+Tails_CPU_idle_timer:
 Tails_control_counter:		ds.w	1	; how long until the CPU takes control
 Tails_respawn_counter:		ds.w	1
 Flying_y_vel_unk:			ds.w	1	; unused

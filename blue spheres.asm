@@ -1,4 +1,8 @@
 ;SpecialStage:
+<<<<<<< Updated upstream
+=======
+;		move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
+>>>>>>> Stashed changes
 		move.b	#MusID_Stop,d0
 		bsr.w	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
@@ -84,7 +88,11 @@ loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($589),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageIcons).l,a0
 		bsr.w	J_Nem_Decomp
+<<<<<<< Updated upstream
 		move.l	#vdpComm(tiles_to_bytes($66F),VRAM,WRITE),(VDP_control_port).l
+=======
+		move.l	#vdpComm(tiles_to_bytes($66F),VRAM,WRITE),(VDP_control_port).l;7e1),VRAM,WRITE),(VDP_control_port).l
+>>>>>>> Stashed changes
 		lea	(ArtNem_SStageShadow).l,a0
 		bsr.w	J_Nem_Decomp
 		lea	(MapUnc_SSNum000).l,a1
@@ -121,9 +129,9 @@ loc_842C:
 		move.w	#0,(Camera_Y_pos_copy).w
 		move.w	#-1,(Screen_Y_wrap_value).w
 		move.l	#Obj_SStage_8FAA,(Player_1).w
-;		tst.w	(Player_mode).w
-;		bne.s	loc_8454
-;		move.l	#Obj_SStage_9212,(Player_2).w
+		tst.w	(Player_mode).w
+		bne.s	loc_8454
+		move.l	#Obj_SStage_9212,(Player_2).w
 Demo_timer	=	Demo_Time_left
 loc_8454:
 		move.l	#Obj_SStage_8DF8,(Reserved_object_3).w
@@ -706,6 +714,7 @@ Map_SStageSphere:
 Map_SStageRing:
 		include "General/Special Stage/Map - Ring.asm"
 		even
+		align 2
 Map_SStageChaosEmerald:
 		include "General/Special Stage/Map - Chaos Emerald.asm"
 		even
@@ -776,3 +785,10 @@ ArtUnc_SStageTails:
 Map_SStageTails:
 		include "General/Sprites/Tails/Map - SStage Tails.asm"
 		even
+ArtUnc_SStageTailstails:
+		binclude "General/Sprites/Tails/Art/SStage Tails tails.bin"
+		even
+Map_SStageTailstails:
+		include "General/Sprites/Tails/Map - SStage Tails tails.asm"
+PLC_SStageTailstails:
+		include	"General/Sprites/Tails/DPLC - SStage Tails tails.asm"

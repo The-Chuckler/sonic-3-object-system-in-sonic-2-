@@ -11628,8 +11628,9 @@ OptionScreen_Select_Not1P:
 ; loc_90D8:
 OptionScreen_Select_Other:
 	; When pressing START on the sound test option, return to the SEGA screen
-	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
+;	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
+	move.w	(Player_option).w,(Player_mode).w
 	rts
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -11704,7 +11705,7 @@ OptionScreen_Controls:
 ; ===========================================================================
 ; word_917A:
 OptionScreen_Choices:
-	dc.l (3-1)<<24|(Player_option&$FFFFFF)
+	dc.l (4-1)<<24|(Player_option&$FFFFFF);to test knuckles
 	dc.l ($80-1)<<24|(Sound_test_sound&$FFFFFF)
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
