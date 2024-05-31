@@ -301,10 +301,10 @@ sub_9B62:
 		cmpi.w	#$100,(Special_stage_clear_timer).w
 		bhs.s	loc_9BA6
 		addq.w	#2,(Special_stage_clear_timer).w
-;		cmpi.w	#2,(Special_stage_clear_timer).w
-;		bne.s	loc_9B8C
-;		moveq	#signextendB(sfx_AllSpheres),d0
-;		jsr	(Play_Music).l
+		cmpi.w	#2,(Special_stage_clear_timer).w
+		bne.s	loc_9B8C
+		move.w	#$D3,d0
+		jsr	(Play_Music).l
 
 loc_9B8C:
 		cmpi.w	#$40,(Special_stage_clear_timer).w
@@ -444,8 +444,8 @@ loc_9D02:
 ;		ori.b	#$80,(Last_star_post_hit).w
 
 loc_9D14:
-;		moveq	#signextendB(sfx_Goal),d0
-;		jsr	(Play_SFX).l
+		move.w	#SndID_Signpost2P,d0
+		jsr	(Play_Music).l
 
 locret_9D1C:
 		rts

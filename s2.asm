@@ -91143,9 +91143,9 @@ Sound4D:	include "sound/sfx/CD - Switch.asm"
 Sound4E:	include "sound/sfx/CE - Ring Left Speaker.asm"
 Sound4F:	include "sound/sfx/CF - Signpost.asm"
 Sound50:	include "sound/sfx/D0 - CNZ Boss Zap.asm"
-Sound51:	include "sound/sfx/D1 - Unknown (Unused).asm"
-Sound52:	include "sound/sfx/D2 - Unknown (Unused).asm"
-Sound53:	include "sound/sfx/D3 - Signpost 2P.asm"
+Sound51:	include "sound/BlueSpheres/65.asm"
+Sound52:	include "sound/BlueSpheres/66.asm"
+Sound53:	include "sound/BlueSpheres/6A.asm"
 Sound54:	include "sound/sfx/D4 - OOZ Lid Pop.asm"
 Sound55:	include "sound/sfx/D5 - Sliding Spike.asm"
 Sound56:	include "sound/sfx/D6 - CNZ Elevator.asm"
@@ -91177,7 +91177,7 @@ Sound6F:	include "sound/sfx/EF - Large Laser.asm"
 Sound70:	include "sound/sfx/F0 - Oil Slide.asm"
 	finishBank
 BlueSpheresS3:
-	move.w	(Player_mode).w,(Player_1+character_id).w
+	move.w	(Player_option).w,(Player_mode).w
 	include	"blue spheres.asm"
 ; end of 'ROM'
 	if padToPowerOfTwo && (*)&(*-1)

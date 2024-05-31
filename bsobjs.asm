@@ -629,8 +629,8 @@ loc_978E:
 ;		ori.b	#$80,(Last_star_post_hit).w
 
 loc_97A0:
-;		moveq	#signextendB(sfx_Goal),d0
-;		jsr	(Play_SFX).l
+		move.w	#SndID_Signpost2P,d0
+		jsr	(Play_Music).l
 
 locret_97A8:
 		rts
@@ -645,7 +645,7 @@ loc_97AA:
 		move.l	a1,4(a2)
 
 loc_97BE:
-	move.w	#SndID_Explosion,d0	; Blue Sphere SFX goes here btw
+	move.w	#$D2,d0	; Blue Sphere SFX goes here btw
 	jsr	(Play_Music).l
 		rts
 ; ---------------------------------------------------------------------------
@@ -692,7 +692,7 @@ loc_9838:
 		beq.s	loc_984C
 		subq.w	#1,(Special_stage_rings_left).w
 		bne.s	loc_984C
-;		moveq	#signextendB(sfx_Perfect),d0
+		move.w	#SndID_Bonus,d0
 		jsr	(Play_Music).l
 
 loc_984C:
