@@ -78,13 +78,13 @@ loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($781),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageDigits).l,a0
 		bsr.w	J_Nem_Decomp
-		lea	(ArtNem_SStageShadow).l,a0
-		lea	(H_scroll_buffer+$20).w,a4
-		bsr.w	J_Nem_Decomp_To_RAM
+;		lea	(ArtNem_SStageShadow).l,a0
+;		lea	(H_scroll_buffer+$20).w,a4
+;		bsr.w	J_Nem_Decomp_To_RAM
 		move.l	#vdpComm(tiles_to_bytes($589),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageIcons).l,a0
 		bsr.w	J_Nem_Decomp
-		move.l	#vdpComm(tiles_to_bytes($7e1),VRAM,WRITE),(VDP_control_port).l
+		move.l	#vdpComm(tiles_to_bytes($66F),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageShadow).l,a0
 		bsr.w	J_Nem_Decomp
 		lea	(MapUnc_SSNum000).l,a1

@@ -350,8 +350,8 @@ locret_94FA:
 
 ; ---------------------------------------------------------------------------
 word_94FC:
-		dc.w $116, $F0A, make_art_tile($7e1,3,1), $110
-		dc.w $127, $F0B, make_art_tile($7e1,3,1), $110
+		dc.w $116, $F0A, make_art_tile($66F,3,1), $110
+		dc.w $127, $F0B, make_art_tile($66F,3,1), $110
 sub_950C:
 		move.w	(SStage_scalar_index_2).w,d0
 		lea	(SStage_scalar_result_2).w,a1
