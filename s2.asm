@@ -868,6 +868,7 @@ Vint_CtrlDMA:
 	startZ80
 	rts
 VInt_1C:
+
 		jsr		Rotate_SSPal;bsr.w	Rotate_SSPal
 		bsr.w	Do_ControllerPal
 		jsr     ProcessDMAQueue

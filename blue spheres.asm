@@ -1,5 +1,4 @@
 ;SpecialStage:
-		move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 		move.b	#MusID_Stop,d0
 		bsr.w	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
@@ -156,7 +155,6 @@ loc_84C2:
 		jsr	(Process_Sprites).l
 		bsr.w	Animate_SSRings
 		bsr.w	Touch_SSSprites
-
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
 		bsr.w	Draw_SSShadows
@@ -181,7 +179,7 @@ loc_8522:
 Palette_fade_info	=	Palette_fade_range
 Palette_fade_index	=	Palette_fade_start
 Palette_fade_count	=	Palette_fade_length
-Pal_fade_delay	=	PalChangeSpeed
+Pal_fade_delay		=	PalChangeSpeed
 loc_852E:
 		move.w	#60,(Demo_timer).w
 		move.w	#$40-1,(Palette_fade_info).w
