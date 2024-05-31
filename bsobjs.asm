@@ -25,7 +25,7 @@ loc_8E5C:
 		move.b	#$80,height_pixels(a0)
 		move.w	#0,priority(a0)
 		move.l	#Map_GetBlueSpheres,mappings(a0)
-		move.w	#make_art_tile($55F,1,1),art_tile(a0)
+		move.w	#make_art_tile($573,1,1),art_tile(a0)
 		move.w	#$120,x_pos(a0)
 		move.w	#$E8,y_pos(a0)
 		move.w	#3*60,move_lock(a0)
@@ -141,7 +141,7 @@ Obj_SStage_8FAA:
 		cmpi.w	#2,(Player_mode).w
 		bne.s	loc_8FFA
 		move.l	#Map_SStageTails,mappings(a0)
-		move.w	#make_art_tile($7B7,1,1),art_tile(a0)
+		move.w	#make_art_tile($7A0,1,1),art_tile(a0)
 ;		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
 ;		bne.w	loc_8FFA
 ;		move.l	#Obj_SStage_9444,(a1)
@@ -368,13 +368,10 @@ locret_94FA:
 
 ; ---------------------------------------------------------------------------
 word_94FC:
-<<<<<<< Updated upstream
-		dc.w $116, $F0A, make_art_tile($66F,3,1), $110
-		dc.w $127, $F0B, make_art_tile($66F,3,1), $110
-=======
+
 		dc.w $116, $F0A, make_art_tile($66F,3,1), $110;7e1,3,1), $110
 		dc.w $127, $F0B, make_art_tile($66F,3,1), $110;7e1,3,1), $110
->>>>>>> Stashed changes
+
 sub_950C:
 		move.w	(SStage_scalar_index_2).w,d0
 		lea	(SStage_scalar_result_2).w,a1
@@ -759,7 +756,7 @@ Obj_SStage_9212:
 		move.b	#$10,height_pixels(a0)
 		move.w	#$180,priority(a0)
 		move.l	#Map_SStageTails,mappings(a0)
-		move.w	#make_art_tile($7E1,1,1),art_tile(a0)
+		move.w	#make_art_tile($55F,1,1),art_tile(a0)
 		move.w	#$A0,$30(a0)
 		move.w	#$70,$32(a0)
 		move.w	#0,$34(a0)
@@ -857,7 +854,7 @@ loc_935E:
 		jsr	(Draw_Sprite).l
 		lea	(PLC_SStageTails).l,a2
 		move.l	#ArtUnc_SStageTails,d6
-		move.w	#tiles_to_bytes($7E1),d4
+		move.w	#tiles_to_bytes($55F),d4
 		bra.w	SStage_PLCLoad_91A2
 
 ; =============== S U B R O U T I N E =======================================
@@ -949,7 +946,7 @@ Obj_SStage_9444:
 		move.b	#$10,height_pixels(a0)
 		move.w	#$100,priority(a0)
 		move.l	#Map_SStageTailstails,mappings(a0)
-		move.w	#make_art_tile($7D4,1,1),art_tile(a0)
+		move.w	#make_art_tile($7b7,1,1),art_tile(a0)
 		move.w	#$A0,$30(a0)
 		move.w	#$70,$32(a0)
 		move.b	#-1,$3A(a0)
@@ -981,5 +978,5 @@ loc_94BC:
 		jsr	(Draw_Sprite).l
 		lea	(PLC_SStageTailstails).l,a2
 		move.l	#ArtUnc_SStageTailstails,d6
-		move.w	#tiles_to_bytes($7D4),d4
+		move.w	#tiles_to_bytes($7b7),d4
 		bra.w	SStage_PLCLoad_91A2

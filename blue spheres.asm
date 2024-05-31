@@ -1,8 +1,5 @@
 ;SpecialStage:
-<<<<<<< Updated upstream
-=======
-;		move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
->>>>>>> Stashed changes
+		move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 		move.b	#MusID_Stop,d0
 		bsr.w	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
@@ -67,13 +64,13 @@ loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($680),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageSphere).l,a0
 		bsr.w	J_Nem_Decomp
-		move.l	#vdpComm(tiles_to_bytes($5A7),VRAM,WRITE),(VDP_control_port).l
+		move.l	#vdpComm(tiles_to_bytes($59B),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageRing).l,a0
 		bsr.w	J_Nem_Decomp
-		move.l	#vdpComm(tiles_to_bytes($59B),VRAM,WRITE),(VDP_control_port).l
+		move.l	#vdpComm(tiles_to_bytes($7D4),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageBG).l,a0
 		bsr.w	J_Nem_Decomp
-		move.l	#vdpComm(tiles_to_bytes($55F),VRAM,WRITE),(VDP_control_port).l
+		move.l	#vdpComm(tiles_to_bytes($573),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_GetBlueSpheres).l,a0
 		bsr.w	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($6F8),VRAM,WRITE),(VDP_control_port).l
@@ -88,11 +85,7 @@ loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($589),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageIcons).l,a0
 		bsr.w	J_Nem_Decomp
-<<<<<<< Updated upstream
-		move.l	#vdpComm(tiles_to_bytes($66F),VRAM,WRITE),(VDP_control_port).l
-=======
 		move.l	#vdpComm(tiles_to_bytes($66F),VRAM,WRITE),(VDP_control_port).l;7e1),VRAM,WRITE),(VDP_control_port).l
->>>>>>> Stashed changes
 		lea	(ArtNem_SStageShadow).l,a0
 		bsr.w	J_Nem_Decomp
 		lea	(MapUnc_SSNum000).l,a1
@@ -107,7 +100,7 @@ loc_82A6:
 		jsr	(Plane_Map_To_VRAM).l
 		lea	(RAM_start).l,a1
 		lea	(MapEni_SStageBG).l,a0
-		move.w	#make_art_tile($59B,2,0),d0
+		move.w	#make_art_tile($7D4,2,0),d0
 		bsr.w	J_Eni_Decomp
 		lea	(RAM_start).l,a1
 		move.l	#vdpComm(VRAM_Plane_B_Name_Table,VRAM,WRITE),d0
@@ -664,25 +657,25 @@ MapPtr_A10A:
 		dc.l Map_SStageSphere
 		dc.w make_art_tile($680,1,1), $0000
 		dc.l Map_SStageRing
-		dc.w make_art_tile($5A7,2,1), $0000
+		dc.w make_art_tile($59b,2,1), $0000
 		dc.l Map_SStageSphere
 		dc.w make_art_tile($680,3,1), $0000
 		dc.l Map_SStageRing
-		dc.w make_art_tile($5A7,2,1), $8030
+		dc.w make_art_tile($59b,2,1), $8030
 		dc.l Map_SStageRing
-		dc.w make_art_tile($5A7,2,1), $8031
+		dc.w make_art_tile($59b,2,1), $8031
 		dc.l Map_SStageRing
-		dc.w make_art_tile($5A7,2,1), $8032
+		dc.w make_art_tile($59b,2,1), $8032
 		dc.l Map_SStageRing
-		dc.w make_art_tile($5A7,2,1), $8033
+		dc.w make_art_tile($59b,2,1), $8033
 		dc.l Map_SStageSphere
 		dc.w make_art_tile($680,2,1), $0000
 		dc.l Map_SStageChaosEmerald
-		dc.w make_art_tile($5A7,3,1), $0000
+		dc.w make_art_tile($59b,3,1), $0000
 		dc.l Map_SStageSphere
 		dc.w make_art_tile($680,2,1), $0000
 		dc.l Map_SStageSuperEmerald
-		dc.w make_art_tile($5A7,3,1), $0000
+		dc.w make_art_tile($59b,3,1), $0000
 Play_Music:
 	jmp	PlaySound
 J_Nem_Decomp:

@@ -374,7 +374,7 @@ loc_9C28:
 		lea	(ArtKosM_SStageSuperEmerald).l,a1
 
 loc_9C52:
-		move.w	#tiles_to_bytes($5A7),d2
+		move.w	#tiles_to_bytes($59b),d2
 		jmp	(Queue_Kos_Module).l
 ; ---------------------------------------------------------------------------
 
