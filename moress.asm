@@ -454,15 +454,6 @@ loc_8630:
 		move.w	d0,d1
 		lsl.w	#2,d0
 		movea.l	(a2,d0.w),a2
-	if Sonic3_Complete=0
-		tst.w	(SK_alone_flag).w
-		bne.s	loc_8652
-		tst.b	(SK_special_stage_flag).w
-		bne.s	loc_8652
-		adda.l	#LockOnROM_Start,a2
-
-loc_8652:
-	endif
 		lea	(SStage_layout_buffer).w,a3
 		moveq	#0,d2
 		move.w	#bytesToLcnt($100),d0

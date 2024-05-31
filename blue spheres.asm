@@ -22,7 +22,6 @@
 		clearRAM	Object_RAM,(Kos_decomp_buffer-Object_RAM)
 		clearRAM	Oscillating_Numbers,Oscillating_Numbers_End;Oscillating_table,(AIZ_vine_angle-Oscillating_table)
 		clearRAM	Sonic_Stat_Record_Buf,Sonic_Stat_Record_Buf_End;Stat_table,$100
-		moveq	#0,d0
 		jsr	(Init_SpriteTable).l
 		clr.w	(VDP_Command_Buffer).w
 		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w
@@ -760,6 +759,9 @@ SStageKos_PerspectiveMaps:
 MapUnc_SSNum000:
 		binclude "General/Special Stage/Uncompressed Map/HUD.bin"
 		even
+PLC_SStageSonic:
+		include "General/Sprites/Sonic/DPLC - SStage Sonic.asm"
+		even
 Map_SStageSonic:
 		include "General/Sprites/Sonic/Map - SStage Sonic.asm"
 		even
@@ -767,10 +769,12 @@ ArtUnc_SStageSonic:
 		align 2
 		binclude "General/Sprites/Sonic/Art/SStage Sonic.bin"
 		even
-
-
+PLC_SStageTails:
+		include "General/Sprites/Tails/DPLC - SStage Tails.asm"
+		even
 ArtUnc_SStageTails:
 		binclude "General/Sprites/Tails/Art/SStage Tails.bin"
 		even
 Map_SStageTails:
 		include "General/Sprites/Tails/Map - SStage Tails.asm"
+		even
