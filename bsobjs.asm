@@ -158,7 +158,7 @@ loc_9010:
 		move.w	#$70,move_lock(a0)
 		move.w	#0,LastLoadedDPLC(a0)
 		move.w	#$F800,speed_shoes_timer(a0)
-		bsr.w	sub_950C
+		jsr	sub_950C
 		move.b	#$FF,next_tilt(a0)
 		move.l	#loc_903E,(a0)
 
@@ -184,7 +184,7 @@ loc_905C:
 		jsr	(Change_Music_Tempo).l
 
 loc_907E:
-		bsr.w	sub_9580
+		jsr	sub_9580
 		moveq	#$C,d0
 		move.w	(Special_stage_velocity).w,d1
 		beq.s	loc_90A8
@@ -257,8 +257,8 @@ loc_9138:
 		move.w	d0,speed_shoes_timer(a0)
 
 loc_9152:
-		bsr.w	sub_950C
-		bsr.w	sub_953E
+		jsr	sub_950C
+		jsr	sub_953E
 		jsr	(Draw_Sprite).l
 
 		cmpi.w	#2,(Player_mode).w
@@ -375,16 +375,16 @@ word_94FC:
 sub_950C:
 		move.w	(SStage_scalar_index_2).w,d0
 		lea	(SStage_scalar_result_2).w,a1
-		bsr.w	GetScalars2
+		jsr	GetScalars2
 		move.w	(SStage_scalar_index_1).w,d0
 		lea	(SStage_scalar_result_1).w,a1
-		bsr.w	GetScalars2
+		jsr	GetScalars2
 		move.w	(SStage_scalar_index_0).w,d0
 		lea	(SStage_scalar_result_0).w,a1
-		bsr.w	GetScalars2
+		jsr	GetScalars2
 		move.w	#$E0,d0
 		lea	(SStage_scalar_result_3).w,a1
-		bsr.w	GetScalars2
+		jsr	GetScalars2
 		rts
 ; End of function sub_950C
 
@@ -396,12 +396,12 @@ sub_953E:
 		move.w	$34(a0),d1
 		move.w	$36(a0),d2
 		move.w	$38(a0),d0
-		bsr.w	sub_A1DC
-		bsr.w	sub_A1B2
-		bsr.w	sub_A188
+		jsr	sub_A1DC
+		jsr	sub_A1B2
+		jsr	sub_A188
 		addi.w	#$100,d0
 		addi.w	#$980,d2
-		bsr.w	sub_A206
+		jsr	sub_A206
 		ext.l	d1
 		lsl.l	#8,d1
 		divs.w	d0,d1
@@ -639,7 +639,7 @@ locret_97A8:
 loc_97AA:
 		cmpi.b	#2,d2
 		bne.s	loc_97C8
-		bsr.w	Find_SStageCollisionResponseSlot
+		jsr	Find_SStageCollisionResponseSlot
 		bne.s	loc_97BE
 		move.b	#2,(a2)
 		move.l	a1,4(a2)
@@ -682,7 +682,7 @@ loc_97EE:
 loc_9822:
 		cmpi.b	#4,d2
 		bne.w	locret_98AE
-		bsr.w	Find_SStageCollisionResponseSlot
+		jsr	Find_SStageCollisionResponseSlot
 		bne.s	loc_9838
 		move.b	#1,(a2)
 		move.l	a1,4(a2)
@@ -765,7 +765,7 @@ Obj_SStage_9212:
 		move.w	#-$800,$36(a0)
 		move.w	#-$20,$38(a0)
 		move.b	#$FF,$3A(a0)
-		bsr.w	sub_93E2
+		jsr	sub_93E2
 		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
 		bne.w	loc_9274; sonic has $12 bytes of art
 		move.l	#Obj_SStage_9444,(a1); i have found $10 bytes for tails
@@ -805,7 +805,7 @@ loc_92A0:
 
 loc_92C4:
 		move.b	(a1,d0.w),mapping_frame(a0)
-		bsr.w	sub_9402
+		jsr	sub_9402
 		cmpi.b	#5,$44(a0)
 		bne.s	loc_9304
 		tst.b	(Special_stage_clear_routine).w
@@ -821,7 +821,7 @@ loc_92C4:
 		jsr	(Play_Music).l
 
 loc_9304:
-		bsr.w	sub_937C
+		jsr	sub_937C
 		andi.w	#button_A_mask|button_B_mask|button_C_mask,d0
 		beq.s	loc_932A
 		tst.b	(Special_stage_jumping_P2).w
@@ -852,7 +852,7 @@ loc_9344:
 		move.w	d0,$36(a0)
 
 loc_935E:
-		bsr.w	sub_953E
+		jsr	sub_953E
 		jsr	(Draw_Sprite).l
 		lea	(PLC_SStageTails).l,a2
 		move.l	#ArtUnc_SStageTails,d6

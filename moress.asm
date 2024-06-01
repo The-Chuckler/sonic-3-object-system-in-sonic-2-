@@ -190,7 +190,7 @@ loc_8876:
 		move.b	#0,(Special_stage_sphere_HUD_flag).w
 		move.l	#vdpComm(VRAM_Plane_A_Name_Table+$086,VRAM,WRITE),d0	; VRAM write $C086
 		move.w	(Special_stage_spheres_left).w,d1
-		bsr.w	Draw_SSNum
+		jsr	Draw_SSNum
 
 loc_8890:
 		tst.b	(Special_stage_extra_life_flags).w
@@ -203,7 +203,7 @@ loc_8890:
 		move.w	(Special_stage_rings_left).w,d1
 
 loc_88B0:
-		bsr.w	Draw_SSNum
+		jsr	Draw_SSNum
 
 locret_88B4:
 		rts
@@ -406,7 +406,7 @@ sub_85B0:
 		lea	(SSCompressedLayoutPtrs).l,a0
 		movea.l	(a0),a0
 		lea	(RAM_start).l,a1
-		bsr.w	J_Kos_Decomp
+		jsr	J_Kos_Decomp
 		lea	(SStageLayoutPtrs).l,a2
 		move.b	(Chaos_emerald_count).w,d3
 		tst.w	(SK_alone_flag).w
@@ -502,7 +502,7 @@ loc_86C8:
 		lea	(SSCompressedLayoutPtrs).l,a0
 		movea.l	4(a0),a0
 		lea	(RAM_start).l,a1
-		bsr.w	J_Kos_Decomp
+		jsr	J_Kos_Decomp
 		lea	(SStage_layout_buffer).w,a3
 		moveq	#0,d2
 		move.w	#bytesToLcnt($600),d0

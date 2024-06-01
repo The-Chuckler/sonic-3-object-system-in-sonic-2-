@@ -1,11 +1,10 @@
 ;SpecialStage:
-		move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 		move.b	#MusID_Stop,d0
-		bsr.w	Play_Music
+		jsr	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
 		clearRAM	Kos_decomp_stored_registers,$6C
-		jsr		ClearPLC;bsr.w	ClearPLC;_Nem_Queue
-		jsr		Pal_FadeToWhite;bsr.w	Pal_FadeToWhite
+		jsr		ClearPLC;jsr	ClearPLC;_Nem_Queue
+		jsr		Pal_FadeToWhite;jsr	Pal_FadeToWhite
 		move	#$2700,sr
 		lea	(VDP_control_port).l,a6
 		move.w	#$8004,(a6)
@@ -17,7 +16,7 @@
 		move.w	#$8720,(a6)
 		clr.b	(Water_fullscreen_flag).w
 		move.w	#$8C81,(a6)
-		jsr		Clear_DisplayData;bsr.w	Clear_DisplayData
+		jsr		Clear_DisplayData;jsr	Clear_DisplayData
 		clearRAM	Sprite_Table_Input,Sprite_Table_Input_End;$400
 		clearRAM	Object_RAM,(Kos_decomp_buffer-Object_RAM)
 		clearRAM	Oscillating_Numbers,Oscillating_Numbers_End;Oscillating_table,(AIZ_vine_angle-Oscillating_table)
@@ -29,33 +28,33 @@
 		move.l	#DMA_queue,(DMA_queue_slot).w
 
 		moveq	#PalID_SS,d0;PalID_SS1,d0
-		jsr		PalLoad_ForFade;Now;bsr.w	PalLoad_Now;ForFade
-;		lea	(Pal_SStage_Main).l,a1
-;		lea	(Target_palette).w,a2
-;		move.w	#bytesToWcnt($80),d0
+		jsr		PalLoad_ForFade;Now;jsr	PalLoad_Now;ForFade
+		lea	(Pal_SStage_Main).l,a1
+		lea	(Target_palette).w,a2
+		move.w	#bytesToWcnt($80),d0
 ;
-;loc_8284:
-;		move.w	(a1)+,(a2)+
-;		dbf	d0,loc_8284
-;		cmpi.w	#3,(Player_mode).w
-;		bne.s	loc_82A6
-;;		lea	(Pal_SStage_Knux).l,a1
-;		lea	(Target_palette+$10).w,a2
-;		move.w	#bytesToWcnt($10),d0
+loc_8284:
+		move.w	(a1)+,(a2)+
+		dbf	d0,loc_8284
+		cmpi.w	#3,(Player_mode).w
+		bne.s	loc_82A6
+		lea	(Pal_SStage_Knux).l,a1
+		lea	(Target_palette+$10).w,a2
+		move.w	#bytesToWcnt($10),d0
 ;
-;loc_82A0:
-;		move.w	(a1)+,(a2)+
-;		dbf	d0,loc_82A0
+loc_82A0:
+		move.w	(a1)+,(a2)+
+		dbf	d0,loc_82A0
 H_scroll_buffer	=	Horiz_Scroll_Buf
 loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($000),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageLayout).l,a0
-		bsr.w	J_Nem_Decomp
-		bsr.w	sub_85B0;layout identifier
+		jsr	J_Nem_Decomp
+		jsr	sub_85B0;layout identifier
 		lea	(RAM_start+$5500).l,a1
 		lea	(MapEni_SStageLayout).l,a0
 		move.w	#make_art_tile($000,0,0),d0
-		bsr.w	J_Eni_Decomp
+		jsr	J_Eni_Decomp
 		lea	(RAM_start+$5500).l,a1
 		move.l	#vdpComm(VRAM_Plane_A_Name_Table,VRAM,WRITE),d0
 		moveq	#$28-1,d1
@@ -63,31 +62,31 @@ loc_82A6:
 		jsr	(Plane_Map_To_VRAM).l
 		move.l	#vdpComm(tiles_to_bytes($680),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageSphere).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($59B),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageRing).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($7D4),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageBG).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($573),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_GetBlueSpheres).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($6F8),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_GBSArrow).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($781),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageDigits).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 ;		lea	(ArtNem_SStageShadow).l,a0
 ;		lea	(H_scroll_buffer+$20).w,a4
-;		bsr.w	J_Nem_Decomp_To_RAM
+;		jsr	J_Nem_Decomp_To_RAM
 		move.l	#vdpComm(tiles_to_bytes($589),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageIcons).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		move.l	#vdpComm(tiles_to_bytes($66F),VRAM,WRITE),(VDP_control_port).l;7e1),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageShadow).l,a0
-		bsr.w	J_Nem_Decomp
+		jsr	J_Nem_Decomp
 		lea	(MapUnc_SSNum000).l,a1
 		move.l	#vdpComm(VRAM_Plane_A_Name_Table+$084,VRAM,WRITE),d0
 		moveq	#8-1,d1
@@ -101,7 +100,7 @@ loc_82A6:
 		lea	(RAM_start).l,a1
 		lea	(MapEni_SStageBG).l,a0
 		move.w	#make_art_tile($7D4,2,0),d0
-		bsr.w	J_Eni_Decomp
+		jsr	J_Eni_Decomp
 		lea	(RAM_start).l,a1
 		move.l	#vdpComm(VRAM_Plane_B_Name_Table,VRAM,WRITE),d0
 		moveq	#$40-1,d1
@@ -109,9 +108,9 @@ loc_82A6:
 		jsr	(Plane_Map_To_VRAM).l
 		lea	(SStageKos_PerspectiveMaps).l,a0
 		lea	(RAM_start).l,a1
-		bsr.w	J_Kos_Decomp
-		bsr.w	sub_9EA0
-		bsr.w	Load_SSSprite_Mappings
+		jsr	J_Kos_Decomp
+		jsr	sub_9EA0
+		jsr	Load_SSSprite_Mappings
 		clr.b	(Level_started_flag).w
 		move.b	#$FF,(Special_stage_sphere_HUD_flag).w;l;w
 		move.b	#$80,(Special_stage_extra_life_flags).w;l;w
@@ -132,36 +131,37 @@ loc_8454:
 		jsr	(Process_Sprites).l
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
-		bsr.w	sub_9D5E
+		jsr	sub_9D5E
 		move.b	#1,(Special_stage_fade_timer).w;l;w
 		move.b	#$1C,(V_int_routine).w
-		jsr		Wait_VSync;bsr.w	Wait_VSync
+		jsr		Wait_VSync;jsr	Wait_VSync
 		move.b	#0,(Special_stage_fade_timer).w;l;w
 		move.w	#$8C89,(VDP_control_port).l
 		move.w	#30*60,(Demo_timer).w
 ;		jsr	(GetDemoPtr).l
+
 		move.b	#MusID_SpecStage,d0;q	#;signextendB(mus_SpecialStage),d0
-		bsr.w	Play_Music
+		jsr	Play_Music
 		move.w	(VDP_reg_1_command).w,d0
 		ori.b	#$40,d0
 		move.w	d0,(VDP_control_port).l
-		jsr		Pal_FadeFromWhite;bsr.w	Pal_FadeFromWhite
+		jsr		Pal_FadeFromWhite;jsr	Pal_FadeFromWhite
 loc_84C2:
-		jsr	PauseGame;bsr.w	Pause_Game
+		jsr	PauseGame;jsr	Pause_Game
 		move.b	#$1C,(V_int_routine).w
 		jsr	(Process_Kos_Queue).l
-		jsr		Wait_VSync;bsr.w	Wait_VSync
+		jsr		Wait_VSync;jsr	Wait_VSync
 		addq.w	#1,(Level_frame_counter).w
 ;		jsr	(Demo_PlayRecord).l
 		jsr	(Process_Sprites).l
-		bsr.w	Animate_SSRings
-		bsr.w	Touch_SSSprites
+		jsr	Animate_SSRings
+		jsr	Touch_SSSprites
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
-		bsr.w	Draw_SSShadows
-		bsr.w	sub_9D5E
-		bsr.w	sub_9B62
-		jsr		Process_Nem_Queue_Init;bsr.w	Process_Nem_Queue_Init
+		jsr	Draw_SSShadows
+		jsr	sub_9D5E
+		jsr	sub_9B62
+		jsr		Process_Nem_Queue_Init;jsr	Process_Nem_Queue_Init
 		jsr	(Process_Kos_Module_Queue).l
 ;		tst.w	(Demo_mode_flag).w
 ;		beq.s	loc_851A
@@ -188,21 +188,21 @@ loc_852E:
 		
 loc_853E:
 		move.b	#$1C,(V_int_routine).w
-		jsr		Wait_VSync;bsr.w	Wait_VSync
+		jsr		Wait_VSync;jsr	Wait_VSync
 ;		jsr	(Demo_PlayRecord).l
 		jsr	(Process_Sprites).l
-		bsr.w	Animate_SSRings
-		bsr.w	Touch_SSSprites
+		jsr	Animate_SSRings
+		jsr	Touch_SSSprites
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
-		bsr.w	sub_9D5E
-		bsr.w	sub_9B62
-		jsr		Process_Nem_Queue_Init;bsr.w	Process_Nem_Queue_Init
+		jsr	sub_9D5E
+		jsr	sub_9B62
+		jsr		Process_Nem_Queue_Init;jsr	Process_Nem_Queue_Init
 		jsr	(Process_Kos_Module_Queue).l
 		subq.w	#1,(Pal_fade_delay).w
 		bpl.s	loc_8588
 		move.w	#2,(Pal_fade_delay).w
-		jsr		Pal_ToWhite;bsr.w	Pal_ToWhite
+		jsr		Pal_ToWhite;jsr	Pal_ToWhite
 
 loc_8588:
 		bra.s	loc_853E
@@ -278,7 +278,7 @@ Touch_SSSprites_BlueSphere:
 		movea.l	4(a0),a1
 		cmpi.b	#2,(a1)
 		bne.s	loc_9E62
-		bsr.w	sub_9E88
+		jsr	sub_9E88
 		move.b	#$A,(a1)
 		bsr.s	sub_9EBC
 		beq.s	locret_9E60
@@ -325,7 +325,7 @@ sub_9EBC:
 		lea	(SStage_layout_buffer+$100).w,a2
 		move.l	a1,d5
 		sub.l	a2,d5
-		bsr.w	sub_9F44
+		jsr	sub_9F44
 		moveq	#0,d6
 		move.l	a5,d1
 		lea	(SStage_unkA500).w,a4;l,a4;w,a4
@@ -343,7 +343,7 @@ loc_9EDE:
 		andi.w	#$3FF,d2
 		cmpi.b	#2,(a2,d2.w)
 		bne.s	loc_9EFC
-		bsr.w	sub_9E88
+		jsr	sub_9E88
 		move.b	#4,(a2,d2.w)
 		move.w	d2,(a5)+
 		addq.w	#2,d1
@@ -560,7 +560,7 @@ loc_A0A4:
 ; ---------------------------------------------------------------------------
 
 loc_A0B8:
-		bsr.w	sub_9E88
+		jsr	sub_9E88
 		move.b	#4,(a2,d0.w)
 		move.w	d0,(a5)+
 

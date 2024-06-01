@@ -592,7 +592,9 @@ Vint_Unused6:
 ;VintSub10
 Vint_Pause:
 	cmpi.b	#GameModeID_SpecialStage,(Game_Mode).w	; Special Stage?
-	beq.w	Vint_Pause_specialStage
+	beq.w	VInt_1C
+	cmpi.b	#GameModeID_BLSPHRSStage,(Game_Mode).w	; Special Stage?
+	beq.w	VInt_1C
 ;VintSub8
 Vint_Level:
 	stopZ80
@@ -683,23 +685,7 @@ Do_Updates:
 
 ; ---------------------------------------------------------------------------
 ;Vint10_specialStage
-Vint_Pause_specialStage:
-	stopZ80
 
-	bsr.w	ReadJoypads
-	jsr	(sndDriverInput).l
-	tst.b	(SS_Last_Alternate_HorizScroll_Buf).w
-	beq.s	loc_84A
-
-	dma68kToVDP SS_Horiz_Scroll_Buf_2,VRAM_SS_Horiz_Scroll_Table,VRAM_SS_Horiz_Scroll_Table_Size,VRAM
-	bra.s	loc_86E
-; ---------------------------------------------------------------------------
-loc_84A:
-	dma68kToVDP SS_Horiz_Scroll_Buf_1,VRAM_SS_Horiz_Scroll_Table,VRAM_SS_Horiz_Scroll_Table_Size,VRAM
-
-loc_86E:
-	startZ80
-	rts
 ; ========================================================================>>>
 ;VintSubA
 Vint_S2SS:
@@ -867,6 +853,7 @@ Vint_CtrlDMA:
 	jsr	(ProcessDMAQueue).l
 	startZ80
 	rts
+Vint_Pause_specialStage:
 VInt_1C:
 
 		jsr		Rotate_SSPal;bsr.w	Rotate_SSPal
@@ -4150,8 +4137,8 @@ TitleScreen_CheckIfChose2P:
 	move.b	#0,(Options_menu_box).w
 	rts
 LoadSPeiclaStae:
-	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
+	jsr	Level_SetPlayerMode
 	rts
 Set_Lives_and_Continues:	
         move.b	#3,(Life_count).w
@@ -11621,16 +11608,16 @@ OptionScreen_Select:
 ; ===========================================================================
 ; loc_90B6:
 OptionScreen_Select_Not1P:
-	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
+
 	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
+	jsr	Level_SetPlayerMode
 	rts
 ; ===========================================================================
 ; loc_90D8:
 OptionScreen_Select_Other:
-	; When pressing START on the sound test option, return to the SEGA screen
-;	move.w	(Player_option).w,(Player_mode).w ; use the option chosen in the Options screen
 	move.b	#GameModeID_BLSPHRSStage,(Game_Mode).w ; => OptionsMenu
-	move.w	(Player_option).w,(Player_mode).w
+	jsr	Level_SetPlayerMode
+
 	rts
 
 ; ||||||||||||||| S U B R O U T I N E |||||||||||||||||||||||||||||||||||||||
@@ -12372,7 +12359,7 @@ TextOptScr_SonicAlone:		menutxt	"SONIC ALONE    "	; byte_97FC:
 TextOptScr_MilesAlone:		menutxt	"MILES ALONE    "	; byte_980C:
 TextOptScr_TailsAlone:		menutxt	"TAILS ALONE    "	; byte_981C:
 TextOptScr_VsModeItems:		menutxt	"* VS MODE ITEMS *"	; byte_982C:
-TextOptScr_AllKindsItems:	menutxt	"ALL KINDS ITEMS"	; byte_983E:
+TextOptScr_AllKindsItems:	menutxt	"KNUCKLES ALONE "	; byte_983E:
 TextOptScr_TeleportOnly:	menutxt	"TELEPORT ONLY  "	; byte_984E:
 TextOptScr_SoundTest:		menutxt	"*  SOUND TEST   *"	; byte_985E:
 TextOptScr_0:			menutxt	"      00       "	; byte_9870:
@@ -68684,7 +68671,7 @@ Obj09_MdAir:
 	bra.w	LoadSSSonicDynPLC
 ; ===========================================================================
 
-SSObjectMoveAndFall:                                 
+SSObjectMoveAndFall:
         addi.w	#$A8,y_vel(a0)	; App
 	move.l  x_vel(a0),d0  ;12 cycles (x vel+yvel)
         move.w  d0,d1       ; 4 cycles  (d1 y vel into y pos)
