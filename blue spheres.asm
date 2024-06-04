@@ -1,4 +1,8 @@
 ;SpecialStage:
+	cmpi.b	#7,(Current_Special_Stage).w
+	blo.s	+
+	move.b	#0,(Current_Special_Stage).w
++
 		move.b	#MusID_Stop,d0
 		jsr	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
@@ -17,10 +21,10 @@
 		clr.b	(Water_fullscreen_flag).w
 		move.w	#$8C81,(a6)
 		jsr		Clear_DisplayData;jsr	Clear_DisplayData
-		clearRAM	Sprite_Table_Input,Sprite_Table_Input_End;$400
+		clearRAM	Sprite_Table_Input,Sprite_Table_Input_End
 		clearRAM	Object_RAM,(Kos_decomp_buffer-Object_RAM)
-		clearRAM	Oscillating_Numbers,Oscillating_Numbers_End;Oscillating_table,(AIZ_vine_angle-Oscillating_table)
-		clearRAM	Sonic_Stat_Record_Buf,Sonic_Stat_Record_Buf_End;Stat_table,$100
+		clearRAM	Sonic_Stat_Record_Buf,Sonic_Stat_Record_Buf_End
+
 		jsr	(Init_SpriteTable).l
 		clr.w	(VDP_Command_Buffer).w
 		move.l	#VDP_Command_Buffer,(VDP_Command_Buffer_Slot).w
@@ -117,10 +121,10 @@ loc_842C:
 		move.w	#0,(Camera_X_pos_copy).w
 		move.w	#0,(Camera_Y_pos_copy).w
 		move.w	#-1,(Screen_Y_wrap_value).w
-		move.l	#Obj_SStage_8FAA,(Player_1).w
+		move.l	#Obj_SStage_8FAA,(MainCharacter).w
 		tst.w	(Player_mode).w
 		bne.s	loc_8454
-		move.l	#Obj_SStage_9212,(Player_2).w
+		move.l	#Obj_SStage_9212,(Sidekick).w
 Demo_timer	=	Demo_Time_left
 loc_8454:
 		move.l	#Obj_SStage_8DF8,(Reserved_object_3).w
