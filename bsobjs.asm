@@ -616,7 +616,7 @@ sub_972E:
 		bne.s	locret_97A8
 		tst.b	(Special_stage_fade_timer).w
 		bne.s	locret_97A8
-		jsr	loc_852E
+
 		move.b	#1,(Special_stage_fade_timer).w
 
 		move.b	#$48,(Game_mode).w
@@ -633,7 +633,7 @@ loc_978E:
 loc_97A0:
 		move.w	#SndID_Signpost2P,d0
 		jsr	(Play_Music).l
-
+		jsr	loc_852E
 locret_97A8:
 		rts
 ; ---------------------------------------------------------------------------
