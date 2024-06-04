@@ -736,10 +736,10 @@ ArtNem_SStageRing:
 		binclude "General/Special Stage/Nemesis Art/Ring.bin"
 		even
 ArtKosM_SStageChaosEmerald:
-		binclude "General/Special Stage/KosinskiM Art/Special Stage Chaos Emerald.bin"
+		binclude "General/Special Stage/Nemesis Art/Special Stage Chaos Emerald.nem";bin"
 		even
 ArtKosM_SStageSuperEmerald:
-		binclude "General/Special Stage/KosinskiM Art/Special Stage Super Emerald.bin"
+		binclude "General/Special Stage/Nemesis Art/Special Stage Super Emerald.nem";bin"
 		even
 MapEni_SStageBG:
 		binclude "General/Special Stage/Enigma Map/BG.bin"

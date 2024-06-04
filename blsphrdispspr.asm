@@ -317,6 +317,18 @@ loc_9B8C:
 locret_9BA4:
 		rts
 ; ---------------------------------------------------------------------------
+; Set a VRAM address via the VDP control port.
+; input: 16-bit VRAM address, control port (default is (vdp_control_port).l)
+; ---------------------------------------------------------------------------
+
+locVRAM:	macro loc,controlport
+;		if ("controlport"=="")
+		move.l	#($40000000+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14)),(VDP_control_port).l
+;		else
+;		move.l	#($40000000+(((loc)&$3FFF)<<16)+(((loc)&$C000)>>14)),controlport
+;		endif
+		endm
+; ---------------------------------------------------------------------------
 
 loc_9BA6:
 		addq.b	#1,(Special_stage_clear_routine).w
@@ -368,14 +380,16 @@ loc_9C28:
 		lea	(Normal_palette_line_4+$4).w,a2
 		move.l	(a1)+,(a2)+
 		move.l	(a1)+,(a2)+
-		lea	(ArtKosM_SStageChaosEmerald).l,a1
+		locVRAM $59B*$20
+;		rts
+		lea	(ArtKosM_SStageChaosEmerald).l,a0;1
 		tst.b	(SK_special_stage_flag).w
 		beq.s	loc_9C52
-		lea	(ArtKosM_SStageSuperEmerald).l,a1
-
+		lea	(ArtKosM_SStageSuperEmerald).l,a0;1
+;
 loc_9C52:
-		move.w	#tiles_to_bytes($59b),d2
-		jmp	(Queue_Kos_Module).l
+;		move.w	#tiles_to_bytes($59b),d2
+		jmp	(NemDec).l;Queue_Kos_Module).l
 ; ---------------------------------------------------------------------------
 
 loc_9C5C:
@@ -413,8 +427,8 @@ loc_9C80:
 		or.w	(Special_stage_Y_pos).w,d0
 		andi.w	#$E0,d0
 		bne.s	locret_9D1C
-		tst.b	(Blue_spheres_stage_flag).w
-		bne.s	loc_9CE6
+;		tst.b	(Blue_spheres_stage_flag).w
+;		bne.s	loc_9CE6
 		lea	(Chaos_emerald_count).w,a2
 		move.b	(SK_special_stage_flag).w,d2
 		beq.s	loc_9CCE
@@ -433,11 +447,11 @@ loc_9CE6:
 		addq.b	#1,(Special_stage_clear_routine).w
 		move.b	#1,(Special_stage_fade_timer).w
 		move.b	#$0C,(Game_mode).w	;Special Stage Results
-		tst.b	(Blue_spheres_stage_flag).w
-		beq.s	loc_9D02
- 		move.b	#$0C,(Game_mode).w	;Blue Sphere results (they are different)
-
-loc_9D02:
+;		tst.b	(Blue_spheres_stage_flag).w
+;		beq.s	loc_9D02 ; What if they are not even there
+ ;		move.b	#$0C,(Game_mode).w	;Blue Sphere results (they are different)
+;
+;loc_9D02:
 ;		tst.b	(Special_bonus_entry_flag).w
 ;		beq.s	loc_9D14
 ;		move.w	(Saved2_zone_and_act).w,(Current_zone_and_act).w

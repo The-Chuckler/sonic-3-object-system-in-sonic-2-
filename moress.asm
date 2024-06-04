@@ -409,11 +409,11 @@ sub_85B0:
 		jsr	J_Kos_Decomp
 		lea	(SStageLayoutPtrs).l,a2
 		move.b	(Chaos_emerald_count).w,d3
-		tst.w	(SK_alone_flag).w
-		beq.s	loc_85E4
-		lea	(SSLayoutOffs_RAM).l,a2
-		moveq	#0,d2
-		bra.s	loc_85F4
+;		tst.w	(SK_alone_flag).w
+;		beq.s	loc_85E4
+;		lea	(SSLayoutOffs_RAM).l,a2
+;		moveq	#0,d2
+;		bra.s	loc_85F4
 ; ---------------------------------------------------------------------------
 
 loc_85E4:
