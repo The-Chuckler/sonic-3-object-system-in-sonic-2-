@@ -527,7 +527,7 @@ loc_A078:
 		sub.w	d5,d0
 		move.w	d0,d4
 		neg.w	d4
-		lea	(SStage_unkA600+6).w,a4;l,a4;w,a4
+		lea	(SStage_unkA600+6).w,a4
 		move.w	(a4),d2
 		sub.w	d5,d2
 		move.w	d5,d3
