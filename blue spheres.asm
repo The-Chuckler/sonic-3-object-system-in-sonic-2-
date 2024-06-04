@@ -78,9 +78,6 @@ loc_82A6:
 		move.l	#vdpComm(tiles_to_bytes($781),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageDigits).l,a0
 		jsr	J_Nem_Decomp
-;		lea	(ArtNem_SStageShadow).l,a0
-;		lea	(H_scroll_buffer+$20).w,a4
-;		jsr	J_Nem_Decomp_To_RAM
 		move.l	#vdpComm(tiles_to_bytes($589),VRAM,WRITE),(VDP_control_port).l
 		lea	(ArtNem_SStageIcons).l,a0
 		jsr	J_Nem_Decomp
@@ -163,16 +160,18 @@ loc_84C2:
 		jsr	sub_9B62
 		jsr		Process_Nem_Queue_Init;jsr	Process_Nem_Queue_Init
 		jsr	(Process_Kos_Module_Queue).l
-;		tst.w	(Demo_mode_flag).w
-;		beq.s	loc_851A
-;		tst.w	(Demo_timer).w
-;		beq.s	loc_8522
+		tst.w	(Demo_mode_flag).w
+		beq.s	loc_851A
+		tst.w	(Demo_timer).w
+		beq.s	loc_8522
 
 loc_851A:
 		bra.s	loc_84C2
-;		cmpi.b	#GameModeID_BLSPHRSStage,(Game_mode).w;$30,(Game_mode).w
-;		beq.s	loc_84C2
-;		jmp	TitleScreen
+		cmpi.b	#GameModeID_BLSPHRSStage,(Game_mode).w;$30,(Game_mode).w
+		beq.s	loc_84C2
+		cmpi.b	#GameModeID_SpecialStage,(Game_mode).w;$30,(Game_mode).w
+		beq.s	loc_84C2
+		jmp	TitleScreen
 loc_8522:
 		tst.w	(Demo_mode_flag).w
 		beq.s	loc_852E
@@ -187,7 +186,7 @@ loc_852E:
 		clr.w	(Pal_fade_delay).w
 		
 loc_853E:
-		move.b	#$1C,(V_int_routine).w
+		move.b	#VintID_Fade,(V_int_routine).w
 		jsr		Wait_VSync;jsr	Wait_VSync
 ;		jsr	(Demo_PlayRecord).l
 		jsr	(Process_Sprites).l
@@ -616,14 +615,14 @@ Animate_SSRings:
 
 		lea	(SStage_extra_sprites+$07).w,a1
 		subq.b	#1,(Rings_frame_timer).w
-		bpl.s	loc_9DC2
+		bpl.s	.move_anim
 		move.b	#7,(Rings_frame_timer).w
 		addi.b	#$10,(Rings_frame).w
 		cmpi.b	#$30,(Rings_frame).w
-		blo.s	loc_9DC2
+		blo.s	.move_anim
 		move.b	#0,(Rings_frame).w
 
-loc_9DC2:
+.move_anim:
 		move.b	(Rings_frame).w,anim(a1)
 		rts
 ; End of function Animate_SSRings
@@ -633,16 +632,16 @@ Load_SSSprite_Mappings:
 		lea	(MapPtr_A10A).l,a0
 		moveq	#$E-1,d1
 
-loc_A0F2:
+.maploop:
 		move.l	(a0)+,(a1)+
 		move.l	(a0)+,(a1)+
-		dbf	d1,loc_A0F2
+		dbf	d1,.maploop
 		lea	(SStage_collision_response_list).w,a1
 		move.w	#$40-1,d1
 
-loc_A102:
+.clrloop:
 		clr.l	(a1)+
-		dbf	d1,loc_A102
+		dbf	d1,.clrloop
 		rts
 ; End of function Load_SSSprite_Mappings
 

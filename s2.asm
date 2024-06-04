@@ -875,6 +875,7 @@ VInt_1E:
 		jsr	ProcessDPLC2 ;Process_Nem_Queue_2
 
 		jmp	(Set_Kos_Bookmark).l
+
 ; ===========================================================================
 ;VintSubC
 Vint_TitleCard:
@@ -920,6 +921,7 @@ Vint_UnusedE:
 ; ===========================================================================
 ;VintSub12
 Vint_Fade:
+	jsr	(ProcessDMAQueue).l
 	bsr.w	Do_ControllerPal
 	move.w	(Hint_counter_reserve).w,(a5)
 	bra.w	ProcessDPLC

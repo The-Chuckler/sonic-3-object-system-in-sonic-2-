@@ -616,7 +616,9 @@ sub_972E:
 		bne.s	locret_97A8
 		tst.b	(Special_stage_fade_timer).w
 		bne.s	locret_97A8
+		jsr	loc_852E
 		move.b	#1,(Special_stage_fade_timer).w
+
 		move.b	#$48,(Game_mode).w
 		tst.b	(Blue_spheres_stage_flag).w
 		beq.s	loc_978E
