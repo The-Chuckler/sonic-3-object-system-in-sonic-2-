@@ -116,43 +116,24 @@ Map_GetBlueSpheres:
 		include "General/Special Stage/Map - Get Blue Spheres.asm"
 ; ---------------------------------------------------------------------------
 Obj_SStage_8FAA:
-;		cmpi.w	#2,(Player_mode).w
-;		bne.s	+
-;		move.l	#Map_SStageTails,mappings(a0)
-;		move.w	#make_art_tile($7A0,1,1),art_tile(a0)
-;		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
-;		bne.w	loc_8FFA
-;		move.l	#Obj_SStage_9444,(a1)
-;		move.w	a0,$3E(a1)
-;		bra.s	loc_8FFA
-;		jmp	loc_8FFA
-;+
-;		move.l	#Map_SStageSonic,mappings(a0)
-;		move.w	#make_art_tile($7A0,0,1),art_tile(a0)
-
-
-;loc_8FFA:
 		move.b	#4,render_flags(a0)
 		move.b	#$10,width_pixels(a0)
 		move.b	#$10,height_pixels(a0)
 		move.w	#$200,priority(a0)
 		move.l	#Map_SStageSonic,mappings(a0)
 		move.w	#make_art_tile($7A0,0,1),art_tile(a0);7D4,0,1),art_tile(a0)
+		clr.w	y_pixel(a0)
 		cmpi.w	#2,(Player_mode).w
 		bne.s	loc_8FFA
 		move.l	#Map_SStageTails,mappings(a0)
 		move.w	#make_art_tile($7A0,1,1),art_tile(a0)
 		jsr	(AllocateObjectAfterCurrent_SpecialStage).l
 		bne.w	loc_8FFA
+		clr.l	(a1)
 		move.l	#Obj_SStage_9444,(a1)
 		move.w	a0,$3E(a1)
 loc_8FFA:
-		cmpi.w	#3,(Player_mode).w
-		bne.s	loc_9010
-		move.l	#Map_SStageKnuckles,mappings(a0)
-		move.w	#make_art_tile($7D4,0,1),art_tile(a0)
 
-;loc_9010:
 loc_9010:
 		move.w	#$A0,flips_remaining(a0)
 		move.w	#$70,move_lock(a0)
@@ -273,11 +254,6 @@ loc_918A:
 		lea	(PLC_SStageSonic).l,a2
 		move.l	#ArtUnc_SStageSonic,d6
 		move.w	#tiles_to_bytes($7A0),d4
-;		cmpi.w	#3,(Player_mode).w
-;		bne.s	SStage_PLCLoad_91A2
-;		lea	(PLC_SStageKnuckles).l,a2
-;		move.l	#ArtUnc_SStageKnuckles,d6
-;		move.w	#tiles_to_bytes($7D4),d4
 
 SStage_PLCLoad_91A2:
 		moveq	#0,d0
@@ -617,14 +593,9 @@ sub_972E:
 		tst.b	(Special_stage_fade_timer).w
 		bne.s	locret_97A8
 
-		move.b	#1,(Special_stage_fade_timer).w
-
-		move.b	#$48,(Game_mode).w
-		tst.b	(Blue_spheres_stage_flag).w
-		beq.s	loc_978E
-		move.b	#$2C,(Game_mode).w
-
+		move.b	#0,(Special_stage_fade_timer).w
 loc_978E:
+		move.b	#$0C,(Game_mode).w
 ;		tst.b	(Special_bonus_entry_flag).w
 ;		beq.s	loc_97A0
 ;		move.w	(Saved2_zone_and_act).w,(Current_zone_and_act).w
@@ -633,7 +604,8 @@ loc_978E:
 loc_97A0:
 		move.w	#SndID_Signpost2P,d0
 		jsr	(Play_Music).l
-		jsr	loc_852E
+		jmp	BluSPH_Exit
+
 locret_97A8:
 		rts
 ; ---------------------------------------------------------------------------

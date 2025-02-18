@@ -401,6 +401,7 @@ loc_9C5C:
 		subq.b	#1,(Special_stage_emerald_timer).w
 		bne.s	locret_9C7E
 		addq.b	#1,(Special_stage_clear_routine).w
+
 		move.w	#MusID_Emerald,d0
 		jsr	(Play_Music).l
 
@@ -447,20 +448,14 @@ loc_9CE6:
 		addq.b	#1,(Special_stage_clear_routine).w
 		move.b	#1,(Special_stage_fade_timer).w
 		move.b	#$0C,(Game_mode).w	;Special Stage Results
-;		tst.b	(Blue_spheres_stage_flag).w
-;		beq.s	loc_9D02 ; What if they are not even there
- ;		move.b	#$0C,(Game_mode).w	;Blue Sphere results (they are different)
-;
-;loc_9D02:
-;		tst.b	(Special_bonus_entry_flag).w
-;		beq.s	loc_9D14
-;		move.w	(Saved2_zone_and_act).w,(Current_zone_and_act).w
-;		ori.b	#$80,(Last_star_post_hit).w
-
 loc_9D14:
 		move.w	#SndID_Signpost2P,d0
 		jsr	(Play_Music).l
-		jsr	loc_852E
+		addi.b	#1,(Emerald_count).w
+		clr.w	(SRAM_mask_interrupts_flag).w
+		jsr	(SaveGame_SpecialStage).l
+		jmp	BluSPH_Exit
+
 locret_9D1C:
 		rts
 ; End of function sub_9B62

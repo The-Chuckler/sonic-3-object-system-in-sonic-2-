@@ -1164,12 +1164,14 @@ DMA_queue_slot:            = VDP_Command_Buffer_Slot
 
 Horiz_Scroll_Buf:		ds.b	$380
 Horiz_Scroll_Buf_End:
+PlayerStats:
 Sonic_Stat_Record_Buf:		ds.b	$100
 Sonic_Stat_Record_Buf_End:
 Pos_table:
 Sonic_Pos_Record_Buf:		ds.b	$100
 Pos_table_P2:
 Tails_Pos_Record_Buf:		ds.b	$100
+PlayerStats_End:
 CNZ_saucer_data:		ds.b	$40	; the number of saucer bumpers in a group which have been destroyed. Used to decide when to give 500 points instead of 10
 CNZ_saucer_data_End:
 Ring_Positions:			ds.b	$600

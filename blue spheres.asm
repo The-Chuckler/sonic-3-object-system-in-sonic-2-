@@ -1,4 +1,4 @@
-;SpecialStage:
+BlueSpheres:
 	cmpi.b	#7,(Current_Special_Stage).w
 	blo.s	+
 	move.b	#0,(Current_Special_Stage).w
@@ -6,7 +6,7 @@
 		move.b	#MusID_Stop,d0
 		jsr	Play_Music
 		clr.w	(Kos_decomp_queue_count).w
-		clearRAM	Kos_decomp_stored_registers,$6C
+		clearRAM	Kos_decomp_stored_registers,Kos_decomp_buffer_END
 		jsr		ClearPLC;jsr	ClearPLC;_Nem_Queue
 		jsr		Pal_FadeToWhite;jsr	Pal_FadeToWhite
 		move	#$2700,sr
@@ -22,8 +22,12 @@
 		move.w	#$8C81,(a6)
 		jsr		Clear_DisplayData;jsr	Clear_DisplayData
 		clearRAM	Sprite_Table_Input,Sprite_Table_Input_End
-		clearRAM	Object_RAM,(Kos_decomp_buffer-Object_RAM)
-		clearRAM	Sonic_Stat_Record_Buf,Sonic_Stat_Record_Buf_End
+		clearRAM	SS_Dynamic_Object_RAM,SS_Dynamic_Object_RAM_End
+		clearRAM	Object_RAM,LevelOnly_Object_RAM_End
+		clearRAM	Dynamic_Object_RAM,Dynamic_Object_RAM_End
+
+
+		clearRAM	PlayerStats,PlayerStats_End
 
 		jsr	(Init_SpriteTable).l
 		clr.w	(VDP_Command_Buffer).w
@@ -38,6 +42,9 @@
 		move.w	#bytesToWcnt($80),d0
 ;
 loc_8284:
+		clr.l	(Player_1).w
+		clr.l	(Player_2).w
+		clr.l	(Tails_Tails).w
 		move.w	(a1)+,(a2)+
 		dbf	d0,loc_8284
 		cmpi.w	#3,(Player_mode).w
@@ -160,7 +167,7 @@ loc_84C2:
 		jsr	(Render_Sprites).l
 		jsr	Draw_SSSprites(pc)
 		jsr	Draw_SSShadows
-		jsr	sub_9D5E
+; 		jsr	sub_9D5E
 		jsr	sub_9B62
 		jsr		Process_Nem_Queue_Init;jsr	Process_Nem_Queue_Init
 		jsr	(Process_Kos_Module_Queue).l
@@ -170,16 +177,14 @@ loc_84C2:
 		beq.s	loc_8522
 
 loc_851A:
-		bra.s	loc_84C2
 		cmpi.b	#GameModeID_BLSPHRSStage,(Game_mode).w;$30,(Game_mode).w
 		beq.s	loc_84C2
 		cmpi.b	#GameModeID_SpecialStage,(Game_mode).w;$30,(Game_mode).w
 		beq.s	loc_84C2
-		jmp	TitleScreen
+		jmp	Level
 loc_8522:
-		tst.w	(Demo_mode_flag).w
-		beq.s	loc_852E
-		move.b	#0,(Game_mode).w
+		move.b	#GameModeID_Level,(Game_mode).w
+
 Palette_fade_info	=	Palette_fade_range
 Palette_fade_index	=	Palette_fade_start
 Palette_fade_count	=	Palette_fade_length
@@ -188,7 +193,6 @@ loc_852E:
 		move.w	#60,(Demo_timer).w
 		move.w	#$40-1,(Palette_fade_info).w
 		clr.w	(Pal_fade_delay).w
-		
 loc_853E:
 		move.b	#VintID_Fade,(V_int_routine).w
 		jsr		Wait_VSync;jsr	Wait_VSync
@@ -211,6 +215,7 @@ loc_8588:
 		bra.s	loc_853E
 		tst.w	(Demo_timer).w
 		bne.s	loc_853E
+		jmp	Level
 		rts
 ;		rts
 sub_9EA0:
@@ -648,7 +653,22 @@ Load_SSSprite_Mappings:
 		dbf	d1,.clrloop
 		rts
 ; End of function Load_SSSprite_Mappings
+BluSPH_Exit:
 
+		clr.w	(Kos_decomp_queue_count).w
+		clearRAM	Kos_decomp_stored_registers,Kos_decomp_buffer_END
+		jsr		ClearPLC;jsr	ClearPLC;_Nem_Queue
+		clearRAM	Sprite_Table_Input,Sprite_Table_Input_End
+		clearRAM	SS_Dynamic_Object_RAM,SS_Dynamic_Object_RAM_End
+		clearRAM	SSRAMMiscStart,SSRAMMiscEnd
+		clearRAM	Object_RAM,LevelOnly_Object_RAM_End
+		clearRAM	PlayerStats,PlayerStats_End
+		move.b	#VintID_Level,(Vint_routine).w
+		jsr	WaitForVint
+		move.b	#GameModeID_Level,(Game_Mode).w ; => TwoPlayerResults
+	clr.w	(SRAM_mask_interrupts_flag).w
+	jsr	SaveGame_SpecialStage
+		rts
 ; ---------------------------------------------------------------------------
 MapPtr_A10A:
 		dc.l Map_SStageSphere
